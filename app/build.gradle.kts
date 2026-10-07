@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin-android")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -55,4 +55,10 @@ dependencies {
     testImplementation("androidx.test.ext:junit:1.2.1")
     testImplementation("org.mockito:mockito-core:5.12.0")
     testImplementation("org.mockito:mockito-android:5.12.0")
+
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.1")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test:espresso-contrib:3.6.1")
 }

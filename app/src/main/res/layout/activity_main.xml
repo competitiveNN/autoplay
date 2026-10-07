@@ -63,12 +63,36 @@
         android:layout_height="wrap_content"
         android:text="@string/toggle_label"
         android:textSize="18sp"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/toggle_label"
         android:thumbTint="@color/thumb_selector"
         android:trackTint="@color/track_selector"
         app:layout_constraintTop_toBottomOf="@id/desc_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
+
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/test_resume"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/toggle_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/battery_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/battery_button"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/test_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
 
     <TextView
         android:id="@+id/hint_text"

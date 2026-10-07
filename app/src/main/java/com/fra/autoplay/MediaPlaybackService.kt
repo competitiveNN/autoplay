@@ -77,6 +77,12 @@ class MediaPlaybackService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        # Handle test resume action
+        if (intent?.action == "com.fra.autoplay.action.TEST_RESUME") {
+            resumeMediaIfStopped()
+            return START_STICKY
+        }
+
         startForeground(NOTIFICATION_ID, buildNotification())
         running = true
 
@@ -121,7 +127,7 @@ class MediaPlaybackService : Service() {
         }
     }
 
-    private fun resumeMediaIfStopped() {
+    internal fun resumeMediaIfStopped() {
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
             // Prioritize sessions that support transport controls and are closer to playing.
