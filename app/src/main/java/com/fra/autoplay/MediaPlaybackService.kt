@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -16,6 +15,7 @@ import android.media.session.MediaController
 import android.media.session.MediaSessionManager
 import android.os.Build
 import android.os.IBinder
+import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 
@@ -27,29 +27,45 @@ class MediaPlaybackService : Service() {
         private var running = false
 
         fun isRunning(): Boolean = running
+
+        /** Returns true if the given audio device represents any kind of headphone. */
+        fun isHeadphone(device: AudioDeviceInfo): Boolean = when (device.type) {
+            AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+            AudioDeviceInfo.TYPE_WIRED_HEADSET,
+            AudioDeviceInfo.TYPE_BLUETOOTH_HEADPHONES,
+            AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+            AudioDeviceInfo.TYPE_USB_HEADSET,
+            AudioDeviceInfo.TYPE_USB_HEADPHONES,
+            AudioDeviceInfo.TYPE_DIGITAL_HEADPHONES,
+            AudioDeviceInfo.TYPE_HEARING_AID -> true
+            else -> false
+        }
     }
 
     private lateinit var audioManager: AudioManager
     private lateinit var mediaSessionManager: MediaSessionManager
     private var headphoneReceiver: HeadphoneConnectionReceiver? = null
+    private var audioCallbackRegistered = false
 
     private val audioDeviceCallback = object : AudioDeviceCallback() {
         override fun onDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
             super.onDevicesAdded(addedDevices)
-            for (device in addedDevices) {
-                if (device.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
-                    device.type == AudioDeviceInfo.TYPE_WIRED_HEADSET
-                ) {
-                    resumeMediaIfStopped()
-                }
+            if (addedDevices.any { isHeadphone(it) }) {
+                resumeMediaIfStopped()
             }
+        }
+
+        override fun onDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) {
+            super.onDevicesRemoved(removedDevices)
+            // Headphones unplugged: nothing to do for the "resume" feature, but we
+            // keep the service alive so it can react to the next plug event.
         }
     }
 
     override fun onCreate() {
         super.onCreate()
-        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        mediaSessionManager = getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
+        audioManager =.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        mediaSessionManager =.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
         createNotificationChannel()
     }
 
@@ -57,24 +73,20 @@ class MediaPlaybackService : Service() {
         startForeground(NOTIFICATION_ID, buildNotification())
         running = true
 
-        audioManager.registerAudioDeviceCallback(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                audioDeviceCallback, null
-            } else {
-                @Suppress("DEPRECATION")
-                object : AudioManager.OnAudioFocusChangeListener {
-                    override fun onAudioFocusChange(focusChange: Int) {}
-                } as AudioManager.OnAudioFocusChangeListener,
-                null
-            )
-        )
+        // Guard against double-registration on sticky restarts.
+        if (!audioCallbackRegistered) {
+            audioManager.registerAudioDeviceCallback(audioDeviceCallback, null)
+            audioCallbackRegistered = true
+        }
 
-        // Register sticky broadcast receiver for headset events as fallback
-        headphoneReceiver = HeadphoneConnectionReceiver()
-        val filter = IntentFilter(Intent.ACTION_HEADSET_PLUG)
-        registerReceiver(headphoneReceiver, filter)
+        // Register sticky broadcast receiver for headset events as fallback.
+        // New instance each time to avoid "receiver already registered" errors.
+        if (headphoneReceiver == null) {
+            headphoneReceiver = HeadphoneConnectionReceiver()
+            registerReceiver(headphoneReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
+        }
 
-        // Check current audio devices for already-connected headphones
+        // Check current audio devices for already-connected headphones.
         checkCurrentDevices()
 
         return START_STICKY
@@ -83,21 +95,22 @@ class MediaPlaybackService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         running = false
-        audioManager.unregisterAudioDeviceCallback(audioDeviceCallback)
-        headphoneReceiver?.let { unregisterReceiver(it) }
+        if (audioCallbackRegistered) {
+            audioManager.unregisterAudioDeviceCallback(audioDeviceCallback)
+            audioCallbackRegistered = false
+        }
+        headphoneReceiver?.let {
+            try { unregisterReceiver(it) } catch (_: Exception) { /* ignore */ }
+            headphoneReceiver = null
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun checkCurrentDevices() {
         val devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-        for (device in devices) {
-            if (device.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
-                device.type == AudioDeviceInfo.TYPE_WIRED_HEADSET
-            ) {
-                resumeMediaIfStopped()
-                break
-            }
+        if (devices.any { isHeadphone(it) }) {
+            resumeMediaIfStopped()
         }
     }
 
@@ -105,27 +118,29 @@ class MediaPlaybackService : Service() {
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
             for (controller in sessions) {
-                if (controller.playbackState != null &&
-                    controller.playbackState.state == android.media.session.PlaybackState.STATE_STOPPED
+                val state = controller.playbackState?.state ?: continue
+                // "not playing" -> resume. Handles both STOPPED and PAUSED states.
+                if (state == android.media.session.PlaybackState.STATE_STOPPED ||
+                    state == android.media.session.PlaybackState.STATE_PAUSED
                 ) {
                     controller.transportControls.play()
                 }
             }
         } catch (_: SecurityException) {
-            // Permission not granted; try fallback via media button
-            sendMediaButtonDownUp()
+            // Permission not granted; try fallback via media button injection.
+            sendMediaButtonClick()
         }
     }
 
     @Suppress("DEPRECATION")
-    private fun sendMediaButtonDownUp() {
+    private fun sendMediaButtonClick() {
         val startTime = SystemClock.uptimeMillis()
         val downIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
             putExtra(
                 Intent.EXTRA_KEY_EVENT,
                 android.view.KeyEvent(startTime, startTime,
                     android.view.KeyEvent.ACTION_DOWN,
-                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
+                    android.view KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
             )
         }
         val upIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
@@ -133,7 +148,7 @@ class MediaPlaybackService : Service() {
                 Intent.EXTRA_KEY_EVENT,
                 android.view.KeyEvent(startTime, startTime,
                     android.view.KeyEvent.ACTION_UP,
-                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
+                    android.view KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
             )
         }
         sendOrderedBroadcast(downIntent, null)
@@ -161,7 +176,7 @@ class MediaPlaybackService : Service() {
                 "AutoPlay Service",
                 NotificationManager.IMPORTANCE_LOW
             )
-            val manager = getSystemService(NotificationManager::class.java)
+            val manager =.getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
         }
     }
