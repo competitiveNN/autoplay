@@ -1,0 +1,33 @@
+# Build
+build/
+*.apk
+*.ap_
+*.aab
+*.class
+*.dex
+*.jar
+*.keystore
+
+# Gradle
+.gradle/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/

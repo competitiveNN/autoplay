@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="ExtraTranslation" severity="ignore" />
+    <issue id="UnusedResources" severity="warning" />
+    <issue id="ObsoleteSdkInt" severity="warning" />
+    <issue id="AllowBackup" severity="warning" />
+    <issue id="GoogleAppIndexingWarning" severity="warning" />
+</lint>
