@@ -13,6 +13,7 @@ import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.session.MediaController
+import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.os.Build
 import android.os.PowerManager
@@ -36,11 +37,9 @@ class MediaPlaybackService : Service() {
         fun isHeadphone(device: AudioDeviceInfo): Boolean = when (device.type) {
             AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
             AudioDeviceInfo.TYPE_WIRED_HEADSET,
-            AudioDeviceInfo.TYPE_BLUETOOTH_HEADPHONES,
             AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+            AudioDeviceInfo.TYPE_BLE_HEADSET,
             AudioDeviceInfo.TYPE_USB_HEADSET,
-            AudioDeviceInfo.TYPE_USB_HEADPHONES,
-            AudioDeviceInfo.TYPE_DIGITAL_HEADPHONES,
             AudioDeviceInfo.TYPE_HEARING_AID -> true
             else -> false
         }
@@ -53,15 +52,15 @@ class MediaPlaybackService : Service() {
     private var audioCallbackRegistered = false
 
     private val audioDeviceCallback = object : AudioDeviceCallback() {
-        override fun onDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
-            super.onDevicesAdded(addedDevices)
+        override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
+            super.onAudioDevicesAdded(addedDevices)
             if (addedDevices.any { isHeadphone(it) }) {
                 resumeMediaIfStopped()
             }
         }
 
-        override fun onDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) {
-            super.onDevicesRemoved(removedDevices)
+        override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) {
+            super.onAudioDevicesRemoved(removedDevices)
             // Headphones unplugged: nothing to do for the "resume" feature, but we
             // keep the service alive so it can react to the next plug event.
         }
@@ -140,7 +139,7 @@ class MediaPlaybackService : Service() {
             val sessions = mediaSessionManager.getActiveSessions(null)
             // Prioritize sessions that support transport controls and are closer to playing.
             val candidates = sessions
-                .filter { it.flags and MediaController.FLAG_HANDLES_TRANSPORT_CONTROLS != 0 }
+                .filter { (it.flags and MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS.toLong()) != 0L }
                 .sortedByDescending { it.playbackState?.lastPositionUpdateTime ?: 0L }
 
             for (controller in candidates) {

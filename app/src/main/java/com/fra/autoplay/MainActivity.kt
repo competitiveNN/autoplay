@@ -6,7 +6,7 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content ContextCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         toggleSwitch = findViewById(R.id.toggle_switch)
         statusText = findViewById(R.id.status_text)
 
-        toggleSwitch.setOn_checkedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+        toggleSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             val intent = Intent(this, MediaPlaybackService::class.java)
             try {
                 if (isChecked) {

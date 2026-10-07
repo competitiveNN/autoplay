@@ -7,7 +7,6 @@ import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.SystemClock
 import android.view.KeyEvent
-import androidx.core.content.getSystemService
 
 class HeadphoneConnectionReceiver : BroadcastReceiver() {
 
@@ -16,7 +15,6 @@ class HeadphoneConnectionReceiver : BroadcastReceiver() {
 
         val state = intent.getIntExtra("state", -1)
         if (state == 1) {
-            // Headphone plugged in
             if (MediaPlaybackService.isRunning()) {
                 val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 val devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
@@ -40,7 +38,6 @@ class HeadphoneConnectionReceiver : BroadcastReceiver() {
                 }
             }
         } catch (_: SecurityException) {
-            // Fallback: send media button
             val startTime = SystemClock.uptimeMillis()
             val down = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
                 putExtra(Intent.EXTRA_KEY_EVENT,
