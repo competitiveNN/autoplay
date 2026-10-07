@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AutoPlay</string>
+    <string name="app_description">Automatically resumes media playback when headphones are connected and media is stopped.</string>
+    <string name="toggle_label">Auto-Resume: ON</string>
+    <string name="notification_title">AutoPlay Active</string>
+    <string name="notification_text">Listening for headphone connection…</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <mipmap name="ic_launcher">
+        <item name="android:drawable">@drawable/ic_launcher_foreground</item>
+    </mipmap>
+    <mipmap name="ic_launcher_round">
+        <item name="android:drawable">@drawable/ic_launcher_foreground</item>
+    </mipmap>
+</resources>
