@@ -25,12 +25,6 @@ class MainActivityTest {
     }
 
     @Test
-    fun testButton_isDisplayed() {
-        Espresso.onView(ViewMatchers.withId(R.id.test_button))
-            .check(matches(ViewMatchers.isDisplayed()))
-    }
-
-    @Test
     fun statusText_isDisplayed() {
         Espresso.onView(ViewMatchers.withId(R.id.status_text))
             .check(matches(ViewMatchers.isDisplayed()))
@@ -38,7 +32,7 @@ class MainActivityTest {
 
     @Test
     fun iconImage_isDisplayed() {
-        Espresso.onView(ViewMatchers.withId(R.id.icon_image))
+        Espresso:onView(ViewMatchers.withId(R.id.icon_image))
             .check(matches(ViewMatchers.isDisplayed()))
     }
 }

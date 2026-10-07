@@ -79,13 +79,13 @@ class MediaPlaybackService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        # Handle stop action
+        // Handle stop action
         if (intent?.action == ACTION_STOP) {
             stopSelf()
             return START_NOT_STICKY
         }
 
-        # Handle test resume action
+        // Handle test resume action
         if (intent?.action == "com.fra.autoplay.action.TEST_RESUME") {
             resumeMediaIfStopped()
             return START_STICKY
@@ -188,6 +188,11 @@ class MediaPlaybackService : Service() {
             this, 0, Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
+        val stopPendingIntent = PendingIntent.getService(
+            this, 0,
+            Intent(this, MediaPlaybackService::class.java).apply { action = ACTION_STOP },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(
@@ -198,6 +203,11 @@ class MediaPlaybackService : Service() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
+            .addAction(
+                R.drawable.ic_stop_24,
+                getString(R.string.notification_stop),
+                stopPendingIntent
+            )
             .build()
     }
 

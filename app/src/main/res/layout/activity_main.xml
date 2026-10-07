@@ -72,39 +72,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
-    <Button
-        android:id="@+id/test_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_resume"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/toggle_switch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/battery_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/battery_button"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/test_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
-
-    <Button
-        android:id="@+id/check_media_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/check_media_button"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/battery_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
-
     <TextView
         android:id="@+id/hint_text"
         android:layout_width="0dp"

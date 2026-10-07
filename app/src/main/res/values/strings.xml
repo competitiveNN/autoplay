@@ -4,19 +4,13 @@
     <string name="toggle_label">Auto-Resume</string>
     <string name="notification_title">AutoPlay Active</string>
     <string name="notification_text">Listening for headphone connection…</string>
+    <string name="notification_battery_warning">Battery optimization is enabled — disable it for reliable background operation</string>
+    <string name="notification_stop">Stop Service</string>
     <string name="status_on">Service running — media will auto-resume</string>
     <string name="status_off">Service stopped — toggle to enable</string>
     <string name="battery_warning">Disable battery optimization for reliable background operation</string>
-    <string name="test_resume">Test Resume</string>
+    <string name="battery_hint">Tip: disable battery optimization for reliable background operation</string>
     <string name="service_started">AutoPlay service started</string>
     <string name="service_stopped">AutoPlay service stopped</string>
     <string name="error">Error: %s</string>
-    <string name="battery_already_disabled">Battery optimization already disabled</string>
-    <string name="check_media_button">Check Media State</string>
-    <string name="battery_button">Disable Battery Optimization</string>
-    <string name="notification_stop">Stop Service</string>
-    <string name="service_not_running">Service not running</string>
-    <string name="no_media_sessions">No active media sessions found</string>
-    <string name="no_media_permission">No permission to access media sessions</string>
-    <string name="battery_hint">Tip: disable battery optimization for reliable background operation</string>
 </resources>
