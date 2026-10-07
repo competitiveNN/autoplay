@@ -12,6 +12,11 @@
     <string name="service_stopped">AutoPlay service stopped</string>
     <string name="error">Error: %s</string>
     <string name="battery_already_disabled">Battery optimization already disabled</string>
+    <string name="check_media_button">Check Media State</string>
     <string name="battery_button">Disable Battery Optimization</string>
+    <string name="notification_stop">Stop Service</string>
+    <string name="service_not_running">Service not running</string>
+    <string name="no_media_sessions">No active media sessions found</string>
+    <string name="no_media_permission">No permission to access media sessions</string>
     <string name="battery_hint">Tip: disable battery optimization for reliable background operation</string>
 </resources>

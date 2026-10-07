@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -25,6 +26,7 @@ class MediaPlaybackService : Service() {
 
     companion object {
         private const val CHANNEL_ID = "autoplay_channel"
+        private const val ACTION_STOP = "com.fra.autoplay.action.STOP"
         private const val NOTIFICATION_ID = 1
         private var running = false
 
@@ -77,6 +79,12 @@ class MediaPlaybackService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        # Handle stop action
+        if (intent?.action == ACTION_STOP) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         # Handle test resume action
         if (intent?.action == "com.fra.autoplay.action.TEST_RESUME") {
             resumeMediaIfStopped()
