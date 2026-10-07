@@ -14,6 +14,8 @@ import android.media.AudioManager
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
 import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
 import android.os.IBinder
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
@@ -45,6 +47,7 @@ class MediaPlaybackService : Service() {
     private lateinit var audioManager: AudioManager
     private lateinit var mediaSessionManager: MediaSessionManager
     private var headphoneReceiver: HeadphoneConnectionReceiver? = null
+    private var batteryOptimizationEnabled = false
     private var audioCallbackRegistered = false
 
     private val audioDeviceCallback = object : AudioDeviceCallback() {
@@ -64,9 +67,13 @@ class MediaPlaybackService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        audioManager =.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        mediaSessionManager =.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        mediaSessionManager = getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
         createNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+            batteryOptimizationEnabled = !pm.isIgnoringBatteryOptimizations(packageName)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -117,13 +124,20 @@ class MediaPlaybackService : Service() {
     private fun resumeMediaIfStopped() {
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
-            for (controller in sessions) {
+            // Prioritize sessions that support transport controls and are closer to playing.
+            val candidates = sessions
+                .filter { it.flags and MediaController.FLAG_HANDLES_TRANSPORT_CONTROLS != 0 }
+                .sortedByDescending { it.playbackState?.lastPositionUpdateTime ?: 0L }
+
+            for (controller in candidates) {
                 val state = controller.playbackState?.state ?: continue
                 // "not playing" -> resume. Handles both STOPPED and PAUSED states.
                 if (state == android.media.session.PlaybackState.STATE_STOPPED ||
                     state == android.media.session.PlaybackState.STATE_PAUSED
                 ) {
                     controller.transportControls.play()
+                    // Only resume the most relevant session to avoid conflicts.
+                    break
                 }
             }
         } catch (_: SecurityException) {
@@ -140,7 +154,7 @@ class MediaPlaybackService : Service() {
                 Intent.EXTRA_KEY_EVENT,
                 android.view.KeyEvent(startTime, startTime,
                     android.view.KeyEvent.ACTION_DOWN,
-                    android.view KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
+                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
             )
         }
         val upIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
@@ -148,7 +162,7 @@ class MediaPlaybackService : Service() {
                 Intent.EXTRA_KEY_EVENT,
                 android.view.KeyEvent(startTime, startTime,
                     android.view.KeyEvent.ACTION_UP,
-                    android.view KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
+                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
             )
         }
         sendOrderedBroadcast(downIntent, null)
@@ -162,7 +176,11 @@ class MediaPlaybackService : Service() {
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title))
-            .setContentText(getString(R.string.notification_text))
+            .setContentText(
+                if (batteryOptimizationEnabled)
+                    getString(R.string.notification_battery_warning)
+                else getString(R.string.notification_text)
+            )
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
@@ -176,7 +194,7 @@ class MediaPlaybackService : Service() {
                 "AutoPlay Service",
                 NotificationManager.IMPORTANCE_LOW
             )
-            val manager =.getSystemService(NotificationManager::class.java)
+            val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
         }
     }

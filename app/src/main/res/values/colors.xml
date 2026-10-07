@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#4CAF50</color>
+    <color name="primary_dark">#388E3C</color>
+    <color name="thumb_off">#9E9E9E</color>
+    <color name="thumb_on">#4CAF50</color>
+    <color name="track_off">#BDBDBD</color>
+    <color name="track_on">#A5D6A7</color>
+    <color name="status_on">#4CAF50</color>
+    <color name="status_off">#757575</color>
+</resources>

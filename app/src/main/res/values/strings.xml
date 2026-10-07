@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">AutoPlay</string>
     <string name="app_description">Automatically resumes media playback when headphones are connected and media is stopped.</string>
-    <string name="toggle_label">Auto-Resume: ON</string>
+    <string name="toggle_label">Auto-Resume</string>
     <string name="notification_title">AutoPlay Active</string>
     <string name="notification_text">Listening for headphone connection…</string>
+    <string name="status_on">Service running — media will auto-resume</string>
+    <string name="status_off">Service stopped — toggle to enable</string>
+    <string name="battery_warning">Disable battery optimization for reliable background operation</string>
+    <string name="battery_hint">Tip: disable battery optimization for reliable background operation</string>
 </resources>
