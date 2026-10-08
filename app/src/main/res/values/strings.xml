@@ -44,6 +44,13 @@
     <string name="settings_about_title">About &amp; Licenses</string>
     <string name="settings_about_summary">Privacy policy, open source licenses, and version info</string>
 
+    <!-- Theme -->
+    <string name="settings_theme_title">App Theme</string>
+    <string name="settings_theme_summary">Choose light or dark theme</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+
     <!-- Resume delay arrays -->
     <string-array name="resume_delay_entries">
         <item>Immediate (0 ms)</item>
@@ -60,6 +67,12 @@
         <item>3000</item>
     </string-array>
 
+    <string-array name="theme_entries">
+        <item>System default</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
     <!-- About / Privacy / Licenses -->
     <string name="privacy_policy_title">Privacy Policy</string>
     <string name="privacy_policy_body">AutoPlay does not collect, store, or transmit any personal data. All preferences are stored locally on your device. The app requires the following permissions:\n\n• FOREGROUND_SERVICE / FOREGROUND_SERVICE_MEDIA_PLAYBACK — to run a persistent background service that detects headphone connections\n• RECEIVE_BOOT_COMPLETED — to restart the service after device reboot\n• MODIFY_AUDIO_SETTINGS — to monitor audio device changes\n• REQUEST_IGNORE_BATTERY_OPTIMIZATIONS — optional, to request exemption from battery optimization for reliable operation\n\nNo analytics, crash reporting, or network requests are made by this app.</string>
@@ -69,4 +82,14 @@
     <string name="about_body">AutoPlay automatically resumes media playback when headphones are connected.\n\nVersion: %s\n\nSource code: https://github.com/fra/autoplay\n\nLicensed under MIT License.</string>
     <string name="about_version_button">Copy Version</string>
     <string name="about_version_toast">Version copied to clipboard</string>
-    </resources>
+
+    <!-- Quick Settings Tile -->
+    <string name="quick_settings_tile_label">AutoPlay quick toggle</string>
+
+    <!-- Backup / Restore -->
+    <string name="settings_backup_title">Backup Settings</string>
+    <string name="settings_restore_title">Restore Settings</string>
+    <string name="settings_backup_done">Settings copied to clipboard</string>
+    <string name="settings_restore_done">Settings restored</string>
+    <string name="settings_restore_failed">Restore failed — invalid data</string>
+</resources>

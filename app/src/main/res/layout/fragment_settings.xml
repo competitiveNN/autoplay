@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/delay_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings_resume_delay_title" />
+        android:text="@string/settings_resume_delay_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_resume_delay_title" />
 
     <TextView
         android:id="@+id/delay_value_text"
@@ -23,7 +29,9 @@
         android:id="@+id/filter_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings_filter_headphones_title" />
+        android:text="@string/settings_filter_headphones_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_filter_headphones_title" />
 
     <TextView
         android:id="@+id/filter_value_text"
@@ -36,13 +44,17 @@
         android:id="@+id/battery_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings_battery_reminder_title" />
+        android:text="@string/settings_battery_reminder_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_battery_reminder_title" />
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/smart_resume_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings_smart_resume_title" />
+        android:text="@string/settings_smart_resume_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_smart_resume_title" />
 
     <TextView
         android:id="@+id/smart_resume_value_text"
@@ -50,6 +62,22 @@
         android:layout_height="wrap_content"
         android:text="Learning..."
         android:textColor="?android:attr/textColorSecondary" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_theme_title"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/theme_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/theme_entries"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_theme_title" />
 
     <Button
         android:id="@+id/excluded_apps_button"
@@ -71,9 +99,26 @@
         android:text="@string/settings_test_resume" />
 
     <Button
+        android:id="@+id/backup_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_backup_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_backup_title" />
+
+    <Button
+        android:id="@+id/restore_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_restore_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_restore_title" />
+
+    <Button
         android:id="@+id/about_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/settings_about_title" />
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

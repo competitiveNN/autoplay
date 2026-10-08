@@ -10,7 +10,18 @@ class AutoPlayApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        applyTheme()
         scheduleBatteryOptimizationCheck()
+    }
+
+    private fun applyTheme() {
+        val theme = PreferencesHelper.getAppTheme(this)
+        val mode = when (theme) {
+            "light" -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            "dark" -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+            else -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(mode)
     }
 
     private fun scheduleBatteryOptimizationCheck() {

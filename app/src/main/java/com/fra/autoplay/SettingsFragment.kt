@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +26,10 @@ class SettingsFragment : Fragment() {
     private lateinit var excludedAppsButton: Button
     private lateinit var excludedAppsValueText: TextView
     private lateinit var aboutButton: Button
+    private lateinit var themeSpinner: Spinner
+    private lateinit var testResumeButton: Button
+    private lateinit var backupButton: Button
+    private lateinit var restoreButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +52,10 @@ class SettingsFragment : Fragment() {
         excludedAppsButton = view.findViewById(R.id.excluded_apps_button)
         excludedAppsValueText = view.findViewById(R.id.excluded_apps_value_text)
         aboutButton = view.findViewById(R.id.about_button)
+        themeSpinner = view.findViewById(R.id.theme_spinner)
+        testResumeButton = view.findViewById(R.id.test_resume_button)
+        backupButton = view.findViewById(R.id.backup_button)
+        restoreButton = view.findViewById(R.id.restore_button)
 
         val delayMs = PreferencesHelper.getResumeDelayMs(requireContext())
         delayValueText.text = formatDelay(delayMs)
@@ -86,6 +95,57 @@ class SettingsFragment : Fragment() {
 
         excludedAppsButton.setOnClickListener {
             showExcludedAppsDialog()
+        }
+
+        themeSpinner.setSelection(when (PreferencesHelper.getAppTheme(requireContext())) {
+            "light" -> 1
+            "dark" -> 2
+            else -> 0
+        })
+
+        themeSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+                val theme = when (position) {
+                    1 -> "light"
+                    2 -> "dark"
+                    else -> "system"
+                }
+                if (theme != PreferencesHelper.getAppTheme(requireContext())) {
+                    PreferencesHelper.setAppTheme(requireContext(), theme)
+                    applyTheme(theme)
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+
+        testResumeButton.setOnClickListener {
+            val intent = Intent(requireContext(), MediaPlaybackService::class.java).apply {
+                action = "com.fra.autoplay.action.TEST_RESUME"
+            }
+            try {
+                androidx.core.content.ContextCompat.startForegroundService(requireContext(), intent)
+                Toast.makeText(requireContext(), R.string.settings_test_resume_sent, Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), getString(R.string.error, e.message), Toast.LENGTH_LONG).show()
+            }
+        }
+
+        backupButton.setOnClickListener {
+            val json = PreferencesHelper.exportToJson(requireContext())
+            val clipboard = requireContext().getSystemService(android.content.ClipboardManager::class.java)
+            clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("autoplay_backup", json))
+            Toast.makeText(requireContext(), R.string.settings_backup_done, Toast.LENGTH_SHORT).show()
+        }
+
+        restoreButton.setOnClickListener {
+            val clipboard = requireContext().getSystemService(android.content.ClipboardManager::class.java)
+            val text = clipboard?.primaryClip?.getItemAt(0)?.text?.toString()
+            if (!text.isNullOrBlank() && PreferencesHelper.importFromJson(requireContext(), text)) {
+                Toast.makeText(requireContext(), R.string.settings_restore_done, Toast.LENGTH_SHORT).show()
+                requireActivity().recreate()
+            } else {
+                Toast.makeText(requireContext(), R.string.settings_restore_failed, Toast.LENGTH_LONG).show()
+            }
         }
 
         aboutButton.setOnClickListener {
@@ -169,6 +229,15 @@ class SettingsFragment : Fragment() {
         } else {
             smartResumeValueText.text = "Disabled"
         }
+    }
+
+    private fun applyTheme(theme: String) {
+        val mode = when (theme) {
+            "light" -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            "dark" -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+            else -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(mode)
     }
 
     private fun formatDelay(ms: Long): String {

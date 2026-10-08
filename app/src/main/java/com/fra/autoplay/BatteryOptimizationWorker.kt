@@ -58,6 +58,7 @@ class BatteryOptimizationWorker(
         return !pm.isIgnoringBatteryOptimizations(context.packageName)
     }
 
+    @android.annotation.SuppressLint("MissingPermission")
     private fun showBatteryOptimizationNotification(context: Context) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         
@@ -90,7 +91,9 @@ class BatteryOptimizationWorker(
             .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        if (androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT < 33) {
+            notificationManager.notify(NOTIFICATION_ID, notification)
+        }
     }
 
     private fun removeBatteryOptimizationNotification(context: Context) {

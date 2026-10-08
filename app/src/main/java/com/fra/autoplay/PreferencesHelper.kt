@@ -12,12 +12,14 @@ object PreferencesHelper {
     private const val KEY_EXCLUDED_PACKAGES = "excluded_packages"
     private const val KEY_SMART_RESUME_ENABLED = "smart_resume_enabled"
     private const val KEY_CONNECTION_HISTORY = "connection_history"
+    private const val KEY_APP_THEME = "app_theme"
     private const val DEFAULT_DELAY_MS = 0L
     private const val DEFAULT_FILTER = true
     private const val DEFAULT_BATTERY_REMINDER = true
     private const val DEFAULT_EXCLUDED_PACKAGES = ""
     private const val DEFAULT_SMART_RESUME = false
     private const val DEFAULT_CONNECTION_HISTORY = ""
+    private const val DEFAULT_APP_THEME = "system"
     private const val MAX_HISTORY_ENTRIES = 100
 
     @Keep
@@ -176,4 +178,50 @@ object PreferencesHelper {
     }
 
     const val ACTION_PREFERENCES_CHANGED = "com.fra.autoplay.action.PREFERENCES_CHANGED"
+
+    fun getAppTheme(context: Context): String =
+        prefs(context).getString(KEY_APP_THEME, DEFAULT_APP_THEME) ?: DEFAULT_APP_THEME
+
+    fun setAppTheme(context: Context, theme: String) =
+        prefs(context).edit().putString(KEY_APP_THEME, theme).apply()
+
+    fun exportToJson(context: Context): String {
+        val p = prefs(context)
+        val map = p.all
+        val sb = StringBuilder("{")
+        var first = true
+        for ((k, v) in map) {
+            if (!first) sb.append(",")
+            first = false
+            sb.append("\"").append(k).append("\":")
+            when (v) {
+                is String -> sb.append("\"").append(v.replace("\\", "\\\\").replace("\"", "\\\"")).append("\"")
+                is Boolean, is Long, is Int, is Float -> sb.append(v.toString())
+                else -> sb.append("\"").append(v.toString().replace("\\", "\\\\").replace("\"", "\\\"")).append("\"")
+            }
+        }
+        sb.append("}")
+        return sb.toString()
+    }
+
+    fun importFromJson(context: Context, json: String): Boolean {
+        return try {
+            val trimmed = json.trim().removePrefix("{").removeSuffix("}")
+            if (trimmed.isBlank()) return false
+            val editor = prefs(context).edit()
+            val regex = Regex("\"([^\"]+)\":\\s*([^,{}]+)")
+            for (match in regex.findAll(trimmed)) {
+                val key = match.groupValues[1]
+                val raw = match.groupValues[2].trim()
+                when {
+                    raw == "true" || raw == "false" -> editor.putBoolean(key, raw == "true")
+                    raw.startsWith("\"") -> editor.putString(key, raw.removeSurrounding("\"").replace("\\\"", "\"").replace("\\\\", "\\"))
+                    else -> raw.toLongOrNull()?.let { editor.putLong(key, it) } ?: editor.putString(key, raw.removeSurrounding("\""))
+                }
+            }
+            editor.apply()
+            notifyPreferencesChanged(context)
+            true
+        } catch (_: Exception) { false }
+    }
 }

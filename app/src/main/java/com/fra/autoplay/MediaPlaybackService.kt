@@ -103,6 +103,7 @@ class MediaPlaybackService : Service() {
         }
         // Listen for preference changes
         prefsReceiver = object : BroadcastReceiver() {
+            @android.annotation.SuppressLint("MissingPermission")
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == PreferencesHelper.ACTION_PREFERENCES_CHANGED) {
                     resumeDelayMs = PreferencesHelper.getResumeDelayMs(context)
@@ -113,11 +114,13 @@ class MediaPlaybackService : Service() {
                     }
                     // Update notification with new battery state
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(NOTIFICATION_ID, buildNotification())
+                    if (androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT < 33) {
+                        notificationManager.notify(NOTIFICATION_ID, buildNotification())
+                    }
                 }
             }
         }
-        registerReceiver(prefsReceiver, IntentFilter(PreferencesHelper.ACTION_PREFERENCES_CHANGED))
+        androidx.core.content.ContextCompat.registerReceiver(this, prefsReceiver, IntentFilter(PreferencesHelper.ACTION_PREFERENCES_CHANGED), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -283,6 +286,23 @@ class MediaPlaybackService : Service() {
                 android.R.drawable.ic_media_play,
                 getString(R.string.notification_test_resume),
                 testResumePendingIntent
+            )
+            .extend(
+                androidx.core.app.NotificationCompat.WearableExtender()
+                    .addAction(
+                        NotificationCompat.Action(
+                            android.R.drawable.ic_media_play,
+                            getString(R.string.notification_test_resume),
+                            testResumePendingIntent
+                        )
+                    )
+                    .addAction(
+                        NotificationCompat.Action(
+                            R.drawable.ic_stop_24,
+                            getString(R.string.notification_stop),
+                            stopPendingIntent
+                        )
+                    )
             )
             .build()
     }
