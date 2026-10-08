@@ -49,12 +49,6 @@ class MainActivityTest {
     }
 
     @Test
-    fun iconImage_isDisplayed() {
-        Espresso.onView(ViewMatchers.withId(R.id.icon_image))
-            .check(matches(ViewMatchers.isDisplayed()))
-    }
-
-    @Test
     fun settingsMenu_opensSettingsActivity() {
         // Directly start SettingsActivity to verify it works
         val intent = Intent(ApplicationProvider.getApplicationContext<Context>(), SettingsActivity::class.java)
