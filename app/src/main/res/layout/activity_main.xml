@@ -4,32 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
-
-    <ImageView
-        android:id="@+id/icon_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="60dp" />
+    android:padding="24dp"
+    android:background="?attr/colorSurface">
 
     <TextView
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:textSize="28sp"
-        android:accessibilityHeading="true"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/icon_image"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="32dp" />
 
     <TextView
         android:id="@+id/status_text"
@@ -38,43 +27,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/status_off"
-        android:textSize="16sp"
-        android:textColor="?attr/colorOnSurface"
+        android:textSize="15sp"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintTop_toBottomOf="@id/title_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
 
-    <TextView
-        android:id="@+id/desc_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/app_description"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        app:layout_constraintTop_toBottomOf="@id/status_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
-
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/toggle_switch"
-        android:labelFor="@id/toggle_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:labelFor="@id/toggle_switch"
         android:text="@string/toggle_label"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textColor="?attr/colorOnSurface"
         android:importantForAccessibility="yes"
         android:contentDescription="@string/toggle_label"
         android:thumbTint="@drawable/thumb_selector"
         android:trackTint="@drawable/track_selector"
-        app:layout_constraintTop_toBottomOf="@id/desc_text"
+        app:layout_constraintTop_toBottomOf="@id/status_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" />
+        android:layout_marginTop="48dp" />
 
     <TextView
         android:id="@+id/hint_text"
