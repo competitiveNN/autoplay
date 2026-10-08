@@ -137,7 +137,10 @@ Coverage badge: `.github/badges/jacoco.svg` (regenerated on every CI push to `ma
 
 ## Diagnostics
 
-Settings → General → Diagnostics toggle (off by default). When on, `AutoPlayApplication` installs a file-only `UncaughtExceptionHandler` that appends to `files/diagnostics_crash.log`. No Firebase/Crashlytics, no network permission. Clear or share via any file manager; disable the toggle to stop logging.
+Settings → General → Diagnostics toggle (off by default). When enabled:
+
+- **Local file logging**: `AutoPlayApplication` installs a file-only `UncaughtExceptionHandler` that appends to `files/diagnostics_crash.log`. Clear or share via any file manager.
+- **Firebase Crashlytics** (optional): If `google-services.json` is present, crashes are also sent to Firebase Crashlytics. No network permission is required by the app; Crashlytics uses its own. Disable the toggle to stop both local and remote logging.
 
 ## Store listing
 

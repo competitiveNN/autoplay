@@ -5,6 +5,8 @@ import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.concurrent.TimeUnit
 
 class AutoPlayApplication : Application(), Configuration.Provider {
@@ -15,9 +17,26 @@ class AutoPlayApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         PreferencesHelper.migrateIfNeeded(this)
+        initCrashlyticsIfOptedIn()
         initDiagnosticsIfOptedIn()
         applyTheme()
         scheduleBatteryOptimizationCheck()
+    }
+
+    private fun initCrashlyticsIfOptedIn() {
+        try {
+            if (PreferencesHelper.isDiagnosticsEnabled(this)) {
+                FirebaseApp.initializeApp(this)
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+            } else {
+                // Only try to disable if Firebase is already initialized
+                if (FirebaseApp.getApps(this).isNotEmpty()) {
+                    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+                }
+            }
+        } catch (_: Exception) {
+            // Firebase not configured (e.g., test environment) — skip silently
+        }
     }
 
     private fun initDiagnosticsIfOptedIn() {

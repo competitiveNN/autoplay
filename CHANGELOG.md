@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.9.0 (2026-10-08)
+
+### Added
+- Optional Firebase Crashlytics integration (controlled by Diagnostics preference in Settings). When enabled, crashes are sent to Firebase; when disabled, only local file logging is used. No network permission required, no data sent without explicit opt-in.
+
+### Improved
+- AutoPlayApplication: graceful Firebase initialization with try-catch for test environments without google-services.json.
+
 ## v1.8.0 (2026-10-08)
 
 ### Added

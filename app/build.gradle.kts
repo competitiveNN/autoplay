@@ -17,8 +17,8 @@ android {
         applicationId = "com.fra.autoplay"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.8.0"
+        versionCode = 10
+        versionName = "1.9.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -109,6 +109,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.work)
+    // Firebase Crashlytics (optional, controlled by diagnostics preference)
+    implementation(libs.firebase.bom)
+    implementation(libs.crashlytics)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
