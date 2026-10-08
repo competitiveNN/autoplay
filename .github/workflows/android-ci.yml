@@ -5,6 +5,8 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+  schedule:
+    - cron: '0 6 * * 1' # Weekly Monday 06:00 UTC
 
 jobs:
   lint:
@@ -36,6 +38,16 @@ jobs:
 
       - name: Run Android Lint
         run: ./gradlew lintDebug --stacktrace
+
+      - name: Update lint baseline
+        if: github.event_name == 'schedule'
+        run: |
+          ./gradlew updateLintBaseline --stacktrace
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/lint-baseline.xml
+          git commit -m "Update lint baseline [skip ci]" || echo "No baseline changes"
+          git push
 
       - name: Upload lint report
         uses: actions/upload-artifact@v4

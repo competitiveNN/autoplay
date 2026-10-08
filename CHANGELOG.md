@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.8.0 (2026-10-08)
+
+### Added
+- `FrameTimingBenchmarkTest` in `:benchmark` — frame timing metrics via `FrameTimingMetric` for scrolling/interaction performance (`./gradlew :benchmark:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.fra.autoplay.benchmark.FrameTimingBenchmarkTest`).
+- Lint baseline auto-update CI step (runs weekly on schedule, commits `app/lint-baseline.xml`).
+
+### Improved
+- CI workflow now triggers on weekly schedule for baseline maintenance.
+
 ## v1.7.0 (2026-10-08)
 
 ### Added
