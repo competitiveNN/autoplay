@@ -1,0 +1,23 @@
+AutoPlay automatically resumes your paused or stopped music when you plug in headphones.
+
+How it works:
+- Runs as a persistent foreground service
+- Detects wired, Bluetooth (A2DP/LE), USB, and hearing-aid headphones
+- Finds the most recently active media session and sends Play
+- Falls back to media-button broadcast if needed
+- Restarts on boot
+
+Features:
+- Single-tap ON/OFF toggle
+- Adjustable resume delay (0-3 seconds)
+- Headphone-type filtering
+- Per-app exclusion list
+- Smart Resume learning - adapts delay to your patterns
+- Home-screen widget and Quick Settings tile
+- Light / dark / system theme
+- Backup / restore settings via clipboard
+- No ads, no tracking, no network permission
+- Fully offline
+
+Open source: https://github.com/fra/autoplay (MIT)
+Requires Android 8.0+, no special hardware.

@@ -1,0 +1,23 @@
+AutoPlay setzt pausierte oder gestoppte Musik automatisch fort, sobald du Kopfhoerer anschliesst.
+
+Funktionsweise:
+- Laeuft als dauerhafter Vordergrunddienst
+- Erkennt kabelgebundene, Bluetooth- (A2DP/LE), USB- und Hoergeraete-Kopfhoerer
+- Findet die zuletzt aktive Mediensitzung und sendet Play
+- Fallback per Media-Button-Broadcast falls noetig
+- Neustart nach Geraeteneustart
+
+Funktionen:
+- Ein-Tipp AN/AUS-Schalter
+- Einstellbare Fortsetz-Verzoegerung (0-3 Sekunden)
+- Filter nach Kopfhoerertyp
+- Ausschlussliste fuer Apps
+- Intelligentes Fortsetzen - passt Verzoegerung an dein Nutzungsverhalten an
+- Homescreen-Widget und Schnellschalter-Kachel
+- Helles / dunkles / System-Design
+- Sicherung / Wiederherstellung per Zwischenablage
+- Keine Werbung, kein Tracking, keine Netzwerkberechtigung
+- Vollstaendig offline
+
+Open Source: https://github.com/fra/autoplay (MIT)
+Benoetigt Android 8.0+, keine spezielle Hardware.

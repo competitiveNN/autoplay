@@ -20,6 +20,8 @@ object PreferencesHelper {
     private const val DEFAULT_SMART_RESUME = false
     private const val DEFAULT_CONNECTION_HISTORY = ""
     private const val DEFAULT_APP_THEME = "system"
+    private const val KEY_SCHEMA_VERSION = "schema_version"
+    private const val CURRENT_SCHEMA_VERSION = 3
     private const val MAX_HISTORY_ENTRIES = 100
 
     @Keep
@@ -185,6 +187,30 @@ object PreferencesHelper {
     fun setAppTheme(context: Context, theme: String) =
         prefs(context).edit().putString(KEY_APP_THEME, theme).apply()
 
+    fun migrateIfNeeded(context: Context) {
+        val p = prefs(context)
+        val version = p.getInt(KEY_SCHEMA_VERSION, 1)
+        if (version >= CURRENT_SCHEMA_VERSION) return
+        val editor = p.edit()
+        if (version < 2) {
+            // v1->v2: ensure smart_resume key exists
+            if (!p.contains(KEY_SMART_RESUME_ENABLED)) {
+                editor.putBoolean(KEY_SMART_RESUME_ENABLED, DEFAULT_SMART_RESUME)
+            }
+        }
+        if (version < 3) {
+            // v2->v3: ensure app_theme key exists, clamp resume delay
+            if (!p.contains(KEY_APP_THEME)) {
+                editor.putString(KEY_APP_THEME, DEFAULT_APP_THEME)
+            }
+            val delay = p.getLong(KEY_RESUME_DELAY_MS, DEFAULT_DELAY_MS)
+            if (delay < 0 || delay > 10000) {
+                editor.putLong(KEY_RESUME_DELAY_MS, DEFAULT_DELAY_MS)
+            }
+        }
+        editor.putInt(KEY_SCHEMA_VERSION, CURRENT_SCHEMA_VERSION).apply()
+    }
+
     fun exportToJson(context: Context): String {
         val p = prefs(context)
         val map = p.all
@@ -208,9 +234,11 @@ object PreferencesHelper {
         return try {
             val trimmed = json.trim().removePrefix("{").removeSuffix("}")
             if (trimmed.isBlank()) return false
-            val editor = prefs(context).edit()
             val regex = Regex("\"([^\"]+)\":\\s*([^,{}]+)")
-            for (match in regex.findAll(trimmed)) {
+            val matches = regex.findAll(trimmed).toList()
+            if (matches.isEmpty()) return false
+            val editor = prefs(context).edit()
+            for (match in matches) {
                 val key = match.groupValues[1]
                 val raw = match.groupValues[2].trim()
                 when {

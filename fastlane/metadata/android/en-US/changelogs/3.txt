@@ -1,0 +1,1 @@
+v1.2.0: Theme toggle, Quick Settings tile, backup/restore, Wear OS, accessibility, German translation.

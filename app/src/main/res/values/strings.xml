@@ -36,7 +36,7 @@
     <string name="settings_smart_resume_title">Smart Resume Learning</string>
     <string name="settings_smart_resume_summary">Learn your usage patterns to optimize resume delay automatically</string>
     <string name="settings_version">Version</string>
-    <string name="settings_version_summary">1.1.0</string>
+    <string name="settings_version_summary">1.2.0</string>
     <string name="settings_test_resume">Test Resume</string>
     <string name="settings_test_resume_summary">Send a test resume command now</string>
     <string name="settings_test_resume_sent">Test resume command sent</string>

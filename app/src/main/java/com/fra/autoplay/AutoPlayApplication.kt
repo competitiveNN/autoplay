@@ -10,6 +10,7 @@ class AutoPlayApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        PreferencesHelper.migrateIfNeeded(this)
         applyTheme()
         scheduleBatteryOptimizationCheck()
     }

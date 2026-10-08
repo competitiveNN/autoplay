@@ -1,0 +1,1 @@
+v1.2.0: Design-Umschalter, Schnellschalter-Kachel, Sicherung/Wiederherstellung, Wear OS, Barrierefreiheit, deutsche Uebersetzung.

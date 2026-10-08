@@ -1,6 +1,34 @@
 # Changelog
 
+## v1.2.0 (2026-10-08)
+
+### Added
+- Dark/light/system theme toggle (AppCompatDelegate, preference, spinner in Settings)
+- Quick Settings Tile (TileService) to toggle service from the notification shade
+- Test Resume button wired in SettingsFragment
+- Backup/restore settings via clipboard JSON export/import
+- Wear OS notification wearable extender (Stop / Test Resume on watch)
+- German localization (`values-de/strings.xml`) — English base updated to 1.2.0
+- Play Store / F-Droid `fastlane` metadata for `en-US` and `de-DE`
+- SharedPreferences schema versioning (`schema_version = 3`) with auto-migration in `AutoPlayApplication`
+- Unit tests for `PreferencesHelper` migration/export and `QuickSettingsTileService` state
+- Benchmark placeholder (`benchmark/README.md`) for future Macrobenchmark
+
+### Improved
+- Accessibility: contentDescription on switches, ScrollView wrapping for large text, liveRegion on status, heading on title
+- About screen now injects real `versionName` and copies it to clipboard
+- Settings: theme spinner, backup/restore buttons, smart-resume ordering fixed
+
+### Fixed
+- Theme `forceDarkAllowed` lint `NewApi` — now `tools:targetApi="q"` on the item
+- `HeadphoneReceiver` manifest name mismatch (`HeadphoneReceiver` → `HeadphoneConnectionReceiver`)
+- Notification posting lint on Android 13+: runtime `POST_NOTIFICATIONS` check + `@SuppressLint`
+- Receiver registration now uses `ContextCompat.registerReceiver(RECEIVER_NOT_EXPORTED)`
+- Quick Settings Tile corrected to `Tile`/`TileService` + `action.QS_TILE`
+- Added `POST_NOTIFICATIONS` permission and `<queries>` for `getInstalledApplications`
+
 ## v1.1.0 (2026-10-08)
+
 
 ### Added
 - **Integration tests** for SettingsActivity and PreferencesHelper using Espresso

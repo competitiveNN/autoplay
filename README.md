@@ -2,6 +2,16 @@
 
 AutoPlay is an Android app that automatically resumes media playback when headphones are connected and media is stopped (paused or stopped), mimicking the behavior of pressing the play button.
 
+## Demo
+
+1. Start your favourite music/podcast app, then pause it.
+2. Open AutoPlay and toggle **ON** (status shows "Service running").
+3. Plug in wired, Bluetooth, or USB headphones — playback resumes automatically.
+4. Use **Test Resume** in notification or Settings to verify without re-plugging.
+5. Try the **widget** or **Quick Settings tile** for one-tap ON/OFF.
+
+> Tip: after toggling OFF and ON, the service re-checks already-connected headphones and resumes immediately.
+
 ## Features
 
 - Runs in the background as a persistent foreground service (never killed)
@@ -18,7 +28,13 @@ AutoPlay is an Android app that automatically resumes media playback when headph
   - Headphone type filter
   - Battery optimization reminder
   - App exclusion list (exclude specific apps from auto-resume)
+  - Smart Resume learning (adapts delay to your usage patterns)
+  - Theme (system / light / dark)
+  - Backup / restore settings via clipboard
 - **Home screen widget** for quick ON/OFF toggle
+- **Quick Settings tile** (Android 7+) — add via Edit tiles in the shade
+- **Wear OS** extended actions on the foreground notification (Stop / Test Resume)
+- **Localization**: English and German (values-de)
 - **Persistent notification** with Test Resume and Stop actions
 - **Periodic battery optimization checks** via WorkManager (every 4 hours)
 
@@ -36,7 +52,10 @@ AutoPlay is an Android app that automatically resumes media playback when headph
 | `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | Foreground service type |
 | `RECEIVE_BOOT_COMPLETED` | Restart on boot |
 | `MODIFY_AUDIO_SETTINGS` | Audio device monitoring |
+| `POST_NOTIFICATIONS` | Foreground + battery warnings (Android 13+) |
 | `READ_PHONE_STATE` | Reserved for future use |
+
+No `INTERNET` permission — fully offline. See Privacy Policy in the app under Settings → About & Licenses.
 
 ## Project structure
 
@@ -49,32 +68,40 @@ app/
 │   │   ├── MediaPlaybackService.kt         # Foreground service + headphone detection
 │   │   ├── HeadphoneReceiver.kt            # ACTION_HEADSET_PLUG broadcast receiver
 │   │   ├── BootReceiver.kt                 # Boot completed receiver
+│   │   ├── QuickSettingsTileService.kt     # QS tile (TileService)
 │   │   ├── SettingsActivity.kt             # Settings screen
-│   │   ├── SettingsFragment.kt             # Preferences fragment
-│   │   ├── PreferencesHelper.kt            # SharedPreferences wrapper
+│   │   ├── SettingsFragment.kt             # Preferences fragment + theme/backup/rename
+│   │   ├── PreferencesHelper.kt            # SharedPreferences wrapper + migration
 │   │   ├── BatteryOptimizationWorker.kt    # WorkManager worker for battery checks
 │   │   ├── AutoPlayWidgetProvider.kt       # Home screen widget
-│   │   └── AutoPlayApplication.kt          # Application class for WorkManager init
+│   │   ├── AboutActivity.kt                # About / Privacy / Licenses
+│   │   └── AutoPlayApplication.kt          # Application class (migration + theme + WorkManager)
 │   ├── res/
 │   │   ├── layout/
 │   │   │   ├── activity_main.xml
-│   │   │   ├── activity_settings.xml
-│   │   │   ├── fragment_settings.xml
+│   │   │   ├── activity_settings.xml / activity_about.xml
+│   │   │   ├── fragment_settings.xml       # ScrollView-wrapped, a11y labelled
 │   │   │   ├── dialog_delay.xml
 │   │   │   └── widget_autoplay.xml
-│   │   ├── values/strings.xml
+│   │   ├── values/strings.xml              # en
+│   │   ├── values-de/strings.xml           # de
+│   │   ├── values/themes.xml               # Material 3 DayNight
 │   │   ├── xml/
 │   │   │   ├── settings_preferences.xml
 │   │   │   └── widget_autoplay_info.xml
-│   │   └── drawable/ic_launcher_foreground.xml
+│   │   └── drawable/ic_launcher*.xml
 │   ├── test/java/com/fra/autoplay/         # Unit tests (Robolectric)
 │   │   ├── MediaPlaybackServiceTest.kt
 │   │   ├── HeadphoneReceiverTest.kt
-│   │   └── BootReceiverTest.kt
+│   │   ├── BootReceiverTest.kt
+│   │   ├── PreferencesHelperTest.kt
+│   │   └── QuickSettingsTileServiceTest.kt
 │   └── androidTest/java/com/fra/autoplay/  # Integration tests (Espresso)
 │       ├── MainActivityTest.kt
 │       ├── SettingsActivityTest.kt
 │       └── PreferencesHelperIntegrationTest.kt
+├── fastlane/metadata/android/               # Play Store / F-Droid (en-US, de-DE)
+└── JETPACK_COMPOSE_MIGRATION_PLAN.md
 ```
 
 ## Building
@@ -83,22 +110,30 @@ app/
 ./gradlew assembleDebug
 ```
 
-Requires Android SDK 34 and Android Gradle Plugin 8.2.
+Requires Android SDK 34 and Java 21 (Temurin). CI uses JDK 21 + `android-actions/setup-android@v3` and caches Gradle.
 
 ## Testing
 
 ```bash
-./gradlew testDebugUnitTest
+./gradlew testDebugUnitTest      # Robolectric unit tests
+./gradlew lintDebug              # Android Lint (baseline in lint.xml)
+./gradlew connectedDebugAndroidTest  # Espresso (needs device/emulator)
 ```
 
 Tests cover:
 - `MediaPlaybackService.isHeadphone()` for all headphone device types
+- `PreferencesHelper` JSON export/import, migration, schema versioning
+- `QuickSettingsTileService` state mapping
 - `HeadphoneReceiver` ignoring non-headset and unplug events
 - `BootReceiver` ignoring non-boot events
 
+## Store listing
+
+Play Store / F-Droid copy lives in `fastlane/metadata/android/{en-US,de-DE}/` (title, short/full description, changelogs). Add screenshots under `fastlane/metadata/android/<locale>/images/phoneScreenshots/`.
+
 ## License
 
-MIT
+MIT — see `LICENSE` or About → Licenses in the app.
 
 ## Troubleshooting
 
@@ -107,19 +142,37 @@ MIT
 2. **Disable battery optimization** — Go to Settings → Apps → AutoPlay → Battery → Unrestricted
 3. **Verify headphone type** — In Settings, ensure "Filter by Headphone Type" matches your headphones (or disable filter for all types)
 4. **Grant notification access** — Some Android versions require notification access for MediaSessionManager
+5. **Check POST_NOTIFICATIONS** — On Android 13+, allow notifications when prompted; otherwise the foreground notification is silent
+6. **Grant notification access** — Some launchers hide the persistent notification on Android 13+ without it
 
-### Service keeps getting killed
-- Disable battery optimization for AutoPlay (Settings → Apps → AutoPlay → Battery → Unrestricted)
-- On some OEM skins (MIUI, OneUI, ColorOS), also enable "Auto-start" and "Background run" in app settings
+### Service keeps getting killed (OEM FAQ)
+
+| OEM | Where to allow AutoPlay |
+|-----|------------------------|
+| **Samsung One UI** | Settings → Apps → AutoPlay → Battery → Unrestricted; Battery → Background usage limits → Never sleeping apps → add AutoPlay |
+| **Xiaomi MIUI / HyperOS** | Settings → Apps → Manage apps → AutoPlay → Battery saver → No restrictions; enable Autostart; lock the app in Recents |
+| **OnePlus OxygenOS** | Settings → Apps → AutoPlay → Battery → Don't optimize; Battery → Battery optimization → Don't optimize |
+| **Huawei EMUI** | Settings → Battery → App launch → AutoPlay → Manage manually → enable all toggles |
+| **OPPO / Realme ColorOS** | Settings → Apps → AutoPlay → Battery → Allow background activity + Allow auto-start |
+| **Vivo Funtouch** | Settings → Battery → Background high power consumption → AutoPlay → allow |
+| **Stock Android (Pixel)** | Settings → Apps → AutoPlay → App battery usage → Unrestricted |
+
+General: also exempt AutoPlay from any "Adaptive battery" / "Battery saver" feature and keep the foreground notification visible — some OEMs aggressively kill apps without a visible notification.
 
 ### Settings don't take effect immediately
-- Resume delay and filter changes apply on next headphone connection
-- Use "Test Resume" in Settings to verify the service responds
+- Resume delay and filter changes apply on next headphone connection (or via Test Resume)
+- Use **Test Resume** in Settings or the notification to verify without replugging
+
+### Localization not showing
+- Locale follows system language (en/de). Change system language and reopen the app.
 
 ### Build fails with Java version error
-- Use Java 17 or 21 (not Java 25+)
-- Set `JAVA_HOME` before running `./gradlew`
+- Use Java 21 (Temurin). CI enforces it.
+- Set `JAVA_HOME=/path/to/jdk-21` before running `./gradlew`
 
 ### "SDK location not found" error
 - Set `ANDROID_HOME` environment variable to your Android SDK path
 - Or create `local.properties` with `sdk.dir=/path/to/android/sdk`
+
+### Lint fails on NewApi / NotificationPermission
+- See `lint.xml` for severity downgrades that are warnings on older API levels. Real errors (WrongViewCast, MissingClass, UnspecifiedRegisterReceiverFlag) still break the build.

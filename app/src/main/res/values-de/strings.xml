@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">AutoPlay</string>
+    <string name="app_description">Setzt die Medienwiedergabe automatisch fort, wenn Kopfhoerer verbunden werden und Medien angehalten sind.</string>
+    <string name="toggle_label">Auto-Fortsetzen</string>
+    <string name="notification_title">AutoPlay aktiv</string>
+    <string name="notification_text">Wartet auf Kopfhoererverbindung …</string>
+    <string name="notification_battery_warning">Akku-Optimierung ist aktiviert — deaktivieren fuer zuverlaessigen Hintergrundbetrieb</string>
+    <string name="notification_stop">Dienst beenden</string>
+    <string name="notification_test_resume">Fortsetzen testen</string>
+    <string name="status_on">Dienst laeuft — Medien werden automatisch fortgesetzt</string>
+    <string name="status_off">Dienst gestoppt — zum Aktivieren umschalten</string>
+    <string name="widget_status_on">AutoPlay: AN</string>
+    <string name="widget_status_off">AutoPlay: AUS</string>
+    <string name="widget_toggle_on">Aktivieren</string>
+    <string name="widget_toggle_off">Deaktivieren</string>
+    <string name="battery_warning">Akku-Optimierung fuer zuverlaessigen Hintergrundbetrieb deaktivieren</string>
+    <string name="battery_hint">Tipp: Akku-Optimierung fuer zuverlaessigen Hintergrundbetrieb deaktivieren</string>
+    <string name="service_started">AutoPlay-Dienst gestartet</string>
+    <string name="service_stopped">AutoPlay-Dienst gestoppt</string>
+    <string name="error">Fehler: %s</string>
+    <string name="settings_title">AutoPlay-Einstellungen</string>
+    <string name="category_general">Allgemein</string>
+    <string name="category_about">Ueber</string>
+    <string name="settings_resume_delay_title">Fortsetz-Verzoegerung</string>
+    <string name="settings_resume_delay_summary">Verzoegerung vor dem Fortsetzen nach Kopfhoererverbindung</string>
+    <string name="settings_resume_delay_dialog">Fortsetz-Verzoegerung waehlen</string>
+    <string name="settings_filter_headphones_title">Nach Kopfhoerertyp filtern</string>
+    <string name="settings_filter_headphones_summary">Nur fuer ausgewaehlte Kopfhoerertypen fortsetzen (sonst alle Typen)</string>
+    <string name="settings_battery_reminder_title">Akku-Optimierungs-Erinnerung</string>
+    <string name="settings_battery_reminder_summary">Warnung anzeigen, wenn Akku-Optimierung fuer diese App aktiviert ist</string>
+    <string name="settings_exclude_apps_title">Apps vom Auto-Fortsetzen ausschließen</string>
+    <string name="settings_smart_resume_title">Intelligentes Fortsetzen</string>
+    <string name="settings_smart_resume_summary">Nutzungsmuster lernen, um die Fortsetz-Verzoegerung automatisch zu optimieren</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_summary">1.2.0</string>
+    <string name="settings_test_resume">Fortsetzen testen</string>
+    <string name="settings_test_resume_summary">Jetzt einen Test-Befehl zum Fortsetzen senden</string>
+    <string name="settings_test_resume_sent">Test-Befehl zum Fortsetzen gesendet</string>
+    <string name="settings_invalid_delay">Ungueltiger Verzoegerungswert</string>
+    <string name="settings_about_title">Ueber &amp; Lizenzen</string>
+    <string name="settings_about_summary">Datenschutz, Open-Source-Lizenzen und Versionsinfo</string>
+    <string name="settings_theme_title">App-Design</string>
+    <string name="settings_theme_summary">Helles oder dunkles Design waehlen</string>
+    <string name="settings_theme_system">Systemstandard</string>
+    <string name="settings_theme_light">Hell</string>
+    <string name="settings_theme_dark">Dunkel</string>
+    <string-array name="resume_delay_entries">
+        <item>Sofort (0 ms)</item>
+        <item>500 ms</item>
+        <item>1 Sekunde</item>
+        <item>2 Sekunden</item>
+        <item>3 Sekunden</item>
+    </string-array>
+    <string-array name="resume_delay_values">
+        <item>0</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>3000</item>
+    </string-array>
+    <string-array name="theme_entries">
+        <item>Systemstandard</item>
+        <item>Hell</item>
+        <item>Dunkel</item>
+    </string-array>
+    <string name="privacy_policy_title">Datenschutzerklaerung</string>
+    <string name="privacy_policy_body">AutoPlay sammelt, speichert oder uebertraegt keine personenbezogenen Daten. Alle Einstellungen werden lokal auf Ihrem Geraet gespeichert.</string>
+    <string name="licenses_title">Open-Source-Lizenzen</string>
+    <string name="licenses_body">Diese App enthaelt folgende Open-Source-Bibliotheken:\n\n• AndroidX-Bibliotheken (Apache 2.0)\n• Google Material Components (Apache 2.0)\n• Kotlin Standard Library (Apache 2.0)</string>
+    <string name="about_title">Ueber AutoPlay</string>
+    <string name="about_body">AutoPlay setzt die Medienwiedergabe automatisch fort, wenn Kopfhoerer verbunden werden.\n\nVersion: %s\n\nQuellcode: https://github.com/fra/autoplay\n\nLizenziert unter MIT-Lizenz.</string>
+    <string name="about_version_button">Version kopieren</string>
+    <string name="about_version_toast">Version in Zwischenablage kopiert</string>
+    <string name="quick_settings_tile_label">AutoPlay-Schnellschalter</string>
+    <string name="settings_backup_title">Einstellungen sichern</string>
+    <string name="settings_restore_title">Einstellungen wiederherstellen</string>
+    <string name="settings_backup_done">Einstellungen in Zwischenablage kopiert</string>
+    <string name="settings_restore_done">Einstellungen wiederhergestellt</string>
+    <string name="settings_restore_failed">Wiederherstellung fehlgeschlagen — ungueltige Daten</string>
+</resources>
