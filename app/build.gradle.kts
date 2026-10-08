@@ -138,6 +138,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.espresso.contrib)
     androidTestImplementation(libs.espresso.intents)
+    androidTestImplementation("tools.fastlane:screengrab:2.1.1")
 
     // Paparazzi's layoutlib/sdk-common are compiled against Guava's -jre variant, but an Android
     // project resolves Guava's -android variant where Sets.toImmutableEnumSet is not public.
