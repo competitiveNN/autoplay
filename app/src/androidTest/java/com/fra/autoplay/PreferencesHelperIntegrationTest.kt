@@ -55,6 +55,31 @@ class PreferencesHelperIntegrationTest {
     }
 
     @Test
+    fun backupRestore_roundTripsOnDevice() {
+        context.getSharedPreferences("autoplay_settings", Context.MODE_PRIVATE).edit().clear().commit()
+        PreferencesHelper.migrateIfNeeded(context)
+        PreferencesHelper.setResumeDelayMs(context, 1000L)
+        PreferencesHelper.setAppTheme(context, "dark")
+        PreferencesHelper.setDiagnosticsEnabled(context, true)
+        val json = PreferencesHelper.exportToJson(context)
+        assertTrue(json.contains("resume_delay_ms"))
+        context.getSharedPreferences("autoplay_settings", Context.MODE_PRIVATE).edit().clear().commit()
+        assertTrue(PreferencesHelper.importFromJson(context, json))
+        assertEquals(1000L, PreferencesHelper.getResumeDelayMs(context))
+        assertEquals("dark", PreferencesHelper.getAppTheme(context))
+        assertTrue(PreferencesHelper.isDiagnosticsEnabled(context))
+    }
+
+    @Test
+    fun migration_fromV3toV4_addsDiagnosticsKey() {
+        context.getSharedPreferences("autoplay_settings", Context.MODE_PRIVATE)
+            .edit().putInt("schema_version", 3).apply()
+        PreferencesHelper.migrateIfNeeded(context)
+        assertEquals(4, context.getSharedPreferences("autoplay_settings", Context.MODE_PRIVATE).getInt("schema_version", -1))
+        assertTrue(!PreferencesHelper.isDiagnosticsEnabled(context))
+    }
+
+    @Test
     fun preferencesHelper_notifyPreferencesChanged_sendsBroadcast() {
         // This test verifies the intent action is correctly defined
         assertEquals(

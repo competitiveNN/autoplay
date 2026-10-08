@@ -98,6 +98,21 @@
         android:layout_height="wrap_content"
         android:text="@string/settings_test_resume" />
 
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/diagnostics_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_diagnostics_title"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/settings_diagnostics_title" />
+
+    <TextView
+        android:id="@+id/diagnostics_value_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_diagnostics_disabled"
+        android:textColor="?android:attr/textColorSecondary" />
+
     <Button
         android:id="@+id/backup_button"
         android:layout_width="match_parent"

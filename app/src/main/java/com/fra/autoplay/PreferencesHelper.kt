@@ -13,6 +13,7 @@ object PreferencesHelper {
     private const val KEY_SMART_RESUME_ENABLED = "smart_resume_enabled"
     private const val KEY_CONNECTION_HISTORY = "connection_history"
     private const val KEY_APP_THEME = "app_theme"
+    private const val KEY_DIAGNOSTICS_ENABLED = "diagnostics_enabled"
     private const val DEFAULT_DELAY_MS = 0L
     private const val DEFAULT_FILTER = true
     private const val DEFAULT_BATTERY_REMINDER = true
@@ -20,8 +21,9 @@ object PreferencesHelper {
     private const val DEFAULT_SMART_RESUME = false
     private const val DEFAULT_CONNECTION_HISTORY = ""
     private const val DEFAULT_APP_THEME = "system"
+    private const val DEFAULT_DIAGNOSTICS_ENABLED = false
     private const val KEY_SCHEMA_VERSION = "schema_version"
-    private const val CURRENT_SCHEMA_VERSION = 3
+    private const val CURRENT_SCHEMA_VERSION = 4
     private const val MAX_HISTORY_ENTRIES = 100
 
     @Keep
@@ -184,6 +186,12 @@ object PreferencesHelper {
     fun getAppTheme(context: Context): String =
         prefs(context).getString(KEY_APP_THEME, DEFAULT_APP_THEME) ?: DEFAULT_APP_THEME
 
+    fun isDiagnosticsEnabled(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_DIAGNOSTICS_ENABLED, DEFAULT_DIAGNOSTICS_ENABLED)
+
+    fun setDiagnosticsEnabled(context: Context, enabled: Boolean) =
+        prefs(context).edit().putBoolean(KEY_DIAGNOSTICS_ENABLED, enabled).apply()
+
     fun setAppTheme(context: Context, theme: String) =
         prefs(context).edit().putString(KEY_APP_THEME, theme).apply()
 
@@ -206,6 +214,11 @@ object PreferencesHelper {
             val delay = p.getLong(KEY_RESUME_DELAY_MS, DEFAULT_DELAY_MS)
             if (delay < 0 || delay > 10000) {
                 editor.putLong(KEY_RESUME_DELAY_MS, DEFAULT_DELAY_MS)
+            }
+        }
+        if (version < 4) {
+            if (!p.contains(KEY_DIAGNOSTICS_ENABLED)) {
+                editor.putBoolean(KEY_DIAGNOSTICS_ENABLED, DEFAULT_DIAGNOSTICS_ENABLED)
             }
         }
         editor.putInt(KEY_SCHEMA_VERSION, CURRENT_SCHEMA_VERSION).apply()

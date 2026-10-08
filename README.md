@@ -32,6 +32,7 @@ AutoPlay is an Android app that automatically resumes media playback when headph
   - Theme (system / light / dark)
   - Backup / restore settings via clipboard
 - **Home screen widget** for quick ON/OFF toggle
+- **Diagnostics (opt-in, local-only)** — when enabled, uncaught crashes append to `files/diagnostics_crash.log` (no network); share manually if filing a bug
 - **Quick Settings tile** (Android 7+) — add via Edit tiles in the shade
 - **Wear OS** extended actions on the foreground notification (Stop / Test Resume)
 - **Localization**: English and German (values-de)
@@ -110,7 +111,7 @@ app/
 ./gradlew assembleDebug
 ```
 
-Requires Android SDK 34 and Java 21 (Temurin). CI uses JDK 21 + `android-actions/setup-android@v3` and caches Gradle.
+Requires Android SDK 34 and Java 21 (Temurin). CI builds debug **and** release (R8 fullMode + shrinkResources) with JDK 21 + `android-actions/setup-android@v3` and caches Gradle.
 
 ## Testing
 
@@ -126,6 +127,10 @@ Tests cover:
 - `QuickSettingsTileService` state mapping
 - `HeadphoneReceiver` ignoring non-headset and unplug events
 - `BootReceiver` ignoring non-boot events
+
+## Diagnostics
+
+Settings → General → Diagnostics toggle (off by default). When on, `AutoPlayApplication` installs a file-only `UncaughtExceptionHandler` that appends to `files/diagnostics_crash.log`. No Firebase/Crashlytics, no network permission. Clear or share via any file manager; disable the toggle to stop logging.
 
 ## Store listing
 

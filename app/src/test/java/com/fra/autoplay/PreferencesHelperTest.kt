@@ -25,7 +25,7 @@ class PreferencesHelperTest {
     fun migrate_setsSchemaVersionAndBackfillsKeys() {
         PreferencesHelper.migrateIfNeeded(context)
         val prefs = context.getSharedPreferences("autoplay_settings", Context.MODE_PRIVATE)
-        assertEquals(3, prefs.getInt("schema_version", -1))
+        assertEquals(4, prefs.getInt("schema_version", -1))
         assertTrue(prefs.contains("app_theme"))
         assertTrue(prefs.contains("smart_resume_enabled"))
     }
@@ -66,6 +66,25 @@ class PreferencesHelperTest {
         assertFalse(PreferencesHelper.importFromJson(context, "not json at all"))
         // Empty still returns false (no content)
         assertFalse(PreferencesHelper.importFromJson(context, "{}"))
+    }
+
+    @Test
+    fun diagnostics_roundTrip() {
+        assertFalse(PreferencesHelper.isDiagnosticsEnabled(context))
+        PreferencesHelper.setDiagnosticsEnabled(context, true)
+        assertTrue(PreferencesHelper.isDiagnosticsEnabled(context))
+        PreferencesHelper.setDiagnosticsEnabled(context, false)
+        assertFalse(PreferencesHelper.isDiagnosticsEnabled(context))
+    }
+
+    @Test
+    fun backupRestore_includesDiagnostics() {
+        PreferencesHelper.setDiagnosticsEnabled(context, true)
+        val json = PreferencesHelper.exportToJson(context)
+        context.getSharedPreferences("autoplay_settings", Context.MODE_PRIVATE).edit().clear().commit()
+        PreferencesHelper.migrateIfNeeded(context)
+        assertTrue(PreferencesHelper.importFromJson(context, json))
+        assertTrue(PreferencesHelper.isDiagnosticsEnabled(context))
     }
 
     @Test

@@ -1,0 +1,10 @@
+# Baseline Profile - generated via Macrobenchmark
+# To regenerate: ./gradlew :benchmark:generateBaselineProfile or :app:generateBaselineProfile
+# Classes are ART-compiled ahead of time for faster cold start.
+HSPLcom/fra/autoplay/MainActivity;-><init>()V
+HSPLcom/fra/autoplay/MediaPlaybackService;-><init>()V
+HSPLcom/fra/autoplay/PreferencesHelper;->getResumeDelayMs(Landroid/content/Context;)J
+HSPLcom/fra/autoplay/PreferencesHelper;->isFilterHeadphones(Landroid/content/Context;)Z
+HSPLcom/fra/autoplay/PreferencesHelper;->migrateIfNeeded(Landroid/content/Context;)V
+HSPLcom/fra/autoplay/AutoPlayApplication;-><init>()V
+HSPLcom/fra/autoplay/SettingsFragment;-><init>()V

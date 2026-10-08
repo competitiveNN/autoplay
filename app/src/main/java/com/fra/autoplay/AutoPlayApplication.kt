@@ -11,8 +11,22 @@ class AutoPlayApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         PreferencesHelper.migrateIfNeeded(this)
+        initDiagnosticsIfOptedIn()
         applyTheme()
         scheduleBatteryOptimizationCheck()
+    }
+
+    private fun initDiagnosticsIfOptedIn() {
+        if (!PreferencesHelper.isDiagnosticsEnabled(this)) return
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            try {
+                val log = java.io.File(filesDir, "diagnostics_crash.log")
+                val ts = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.ROOT).format(java.util.Date())
+                log.appendText("[$ts] ${throwable::class.java.name}: ${throwable.message}\n${throwable.stackTraceToString()}\n---\n")
+            } catch (_: Exception) {}
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
     }
 
     private fun applyTheme() {

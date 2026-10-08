@@ -28,6 +28,8 @@ class SettingsFragment : Fragment() {
     private lateinit var aboutButton: Button
     private lateinit var themeSpinner: Spinner
     private lateinit var testResumeButton: Button
+    private lateinit var diagnosticsSwitch: Switch
+    private lateinit var diagnosticsValueText: TextView
     private lateinit var backupButton: Button
     private lateinit var restoreButton: Button
 
@@ -54,8 +56,12 @@ class SettingsFragment : Fragment() {
         aboutButton = view.findViewById(R.id.about_button)
         themeSpinner = view.findViewById(R.id.theme_spinner)
         testResumeButton = view.findViewById(R.id.test_resume_button)
+        diagnosticsSwitch = view.findViewById(R.id.diagnostics_switch)
+        diagnosticsValueText = view.findViewById(R.id.diagnostics_value_text)
         backupButton = view.findViewById(R.id.backup_button)
         restoreButton = view.findViewById(R.id.restore_button)
+        diagnosticsSwitch.isChecked = PreferencesHelper.isDiagnosticsEnabled(requireContext())
+        updateDiagnosticsText()
 
         val delayMs = PreferencesHelper.getResumeDelayMs(requireContext())
         delayValueText.text = formatDelay(delayMs)
@@ -128,6 +134,16 @@ class SettingsFragment : Fragment() {
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), getString(R.string.error, e.message), Toast.LENGTH_LONG).show()
             }
+        }
+
+        diagnosticsSwitch.setOnCheckedChangeListener { _, checked ->
+            PreferencesHelper.setDiagnosticsEnabled(requireContext(), checked)
+            updateDiagnosticsText()
+            Toast.makeText(
+                requireContext(),
+                if (checked) R.string.settings_diagnostics_enabled else R.string.settings_diagnostics_disabled,
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         backupButton.setOnClickListener {
@@ -229,6 +245,13 @@ class SettingsFragment : Fragment() {
         } else {
             smartResumeValueText.text = "Disabled"
         }
+    }
+
+    private fun updateDiagnosticsText() {
+        diagnosticsValueText.text = getString(
+            if (PreferencesHelper.isDiagnosticsEnabled(requireContext()))
+                R.string.settings_diagnostics_enabled else R.string.settings_diagnostics_disabled
+        )
     }
 
     private fun applyTheme(theme: String) {

@@ -1,5 +1,30 @@
 # Changelog
 
+## v1.4.0 (2026-10-08)
+
+### Added
+- Release hardening: R8 fullMode, `isShrinkResources`, `baselineProfile` block, `baseline-prof.txt` startup profile
+- Local-only diagnostics opt-in (Settings toggle, `diagnostics_enabled` preference, `diagnostics_crash.log` in app-private files, no network)
+- Unit + instrumentation coverage for diagnostics and backup/restore round-trip
+
+### Improved
+- `proguard-rules.pro` narrowed: keep only Manifest-referenced entry points, allow R8 fullMode shrinking
+- `gradle.properties`: `android.enableR8.fullMode` + `android.nonTransitiveRClass`
+
+### Fixed
+- `PreferencesHelper.importFromJson` now rejects non-JSON (empty regex match returns false)
+
+## v1.3.0 (2026-10-08)
+
+### Added
+- German localization now complete and enforced by CI metadata check (`values-de/strings.xml`)
+- Play Store / F-Droid `fastlane` metadata hardened: validation step in CI
+- SharedPreferences migration extended to v4 backbone (reserved for future keys)
+- README: benchmark notes and store listing pipeline documented
+
+### Improved
+- CHANGELOG versioning now tied to `versionCode`/`versionName` in `app/build.gradle.kts`
+
 ## v1.2.0 (2026-10-08)
 
 ### Added

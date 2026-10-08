@@ -36,7 +36,7 @@
     <string name="settings_smart_resume_title">Smart Resume Learning</string>
     <string name="settings_smart_resume_summary">Learn your usage patterns to optimize resume delay automatically</string>
     <string name="settings_version">Version</string>
-    <string name="settings_version_summary">1.2.0</string>
+    <string name="settings_version_summary">1.4.0</string>
     <string name="settings_test_resume">Test Resume</string>
     <string name="settings_test_resume_summary">Send a test resume command now</string>
     <string name="settings_test_resume_sent">Test resume command sent</string>
@@ -87,6 +87,10 @@
     <string name="quick_settings_tile_label">AutoPlay quick toggle</string>
 
     <!-- Backup / Restore -->
+    <string name="settings_diagnostics_title">Diagnostics (local crash log)</string>
+    <string name="settings_diagnostics_summary">When enabled, uncaught crashes are appended to an app-private file (files/diagnostics_crash.log). No network is used. Share it manually if you file a bug. Off by default.</string>
+    <string name="settings_diagnostics_enabled">Diagnostics enabled — log at files/diagnostics_crash.log</string>
+    <string name="settings_diagnostics_disabled">Diagnostics disabled</string>
     <string name="settings_backup_title">Backup Settings</string>
     <string name="settings_restore_title">Restore Settings</string>
     <string name="settings_backup_done">Settings copied to clipboard</string>

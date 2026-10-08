@@ -43,6 +43,21 @@ jobs:
       - name: Run lint
         run: ./gradlew lintDebug
 
+      - name: Validate fastlane metadata
+        run: |
+          test -f fastlane/metadata/android/en-US/title.txt || (echo "Missing en-US title" && exit 1)
+          test -f fastlane/metadata/android/en-US/short_description.txt || (echo "Missing en-US short_description" && exit 1)
+          test -f fastlane/metadata/android/en-US/full_description.txt || (echo "Missing en-US full_description" && exit 1)
+          test -f fastlane/metadata/android/de-DE/title.txt || (echo "Missing de-DE title" && exit 1)
+          test -f fastlane/metadata/android/de-DE/short_description.txt || (echo "Missing de-DE short_description" && exit 1)
+          test -f fastlane/metadata/android/de-DE/full_description.txt || (echo "Missing de-DE full_description" && exit 1)
+          test -f app/src/main/res/values/strings.xml || (echo "Missing base strings" && exit 1)
+          test -f app/src/main/res/values-de/strings.xml || (echo "Missing de strings" && exit 1)
+          echo "fastlane metadata OK"
+
+      - name: Build release APK (R8)
+        run: ./gradlew assembleRelease
+
       - name: Upload lint report
         uses: actions/upload-artifact@v4
         if: always()
@@ -50,9 +65,11 @@ jobs:
           name: lint-report
           path: app/build/reports/lint-results-debug.html
 
-      - name: Upload APK
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: autoplay-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: autoplay-apks
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk

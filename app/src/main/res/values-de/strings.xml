@@ -32,7 +32,7 @@
     <string name="settings_smart_resume_title">Intelligentes Fortsetzen</string>
     <string name="settings_smart_resume_summary">Nutzungsmuster lernen, um die Fortsetz-Verzoegerung automatisch zu optimieren</string>
     <string name="settings_version">Version</string>
-    <string name="settings_version_summary">1.2.0</string>
+    <string name="settings_version_summary">1.4.0</string>
     <string name="settings_test_resume">Fortsetzen testen</string>
     <string name="settings_test_resume_summary">Jetzt einen Test-Befehl zum Fortsetzen senden</string>
     <string name="settings_test_resume_sent">Test-Befehl zum Fortsetzen gesendet</string>
@@ -72,6 +72,10 @@
     <string name="about_version_button">Version kopieren</string>
     <string name="about_version_toast">Version in Zwischenablage kopiert</string>
     <string name="quick_settings_tile_label">AutoPlay-Schnellschalter</string>
+    <string name="settings_diagnostics_title">Diagnose (lokales Absturzprotokoll)</string>
+    <string name="settings_diagnostics_summary">Wenn aktiviert, werden Abstuerze an eine App-private Datei angehaengt (files/diagnostics_crash.log). Keine Netzwerkuebertragung. Nur bei Bedarf teilen. Standard: Aus.</string>
+    <string name="settings_diagnostics_enabled">Diagnose aktiv — Protokoll unter files/diagnostics_crash.log</string>
+    <string name="settings_diagnostics_disabled">Diagnose deaktiviert</string>
     <string name="settings_backup_title">Einstellungen sichern</string>
     <string name="settings_restore_title">Einstellungen wiederherstellen</string>
     <string name="settings_backup_done">Einstellungen in Zwischenablage kopiert</string>
