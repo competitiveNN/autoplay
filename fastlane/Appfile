@@ -1,3 +1,2 @@
-platform_name :android
 app_package_name "com.fra.autoplay"
 app_name "AutoPlay"
