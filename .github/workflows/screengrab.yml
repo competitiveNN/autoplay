@@ -37,10 +37,6 @@ jobs:
 
       - name: Install fastlane + bundle
         run: |
-          export GEM_HOME="$HOME/.gem"
-          export GEM_PATH="$HOME/.gem/ruby/$(ruby -e 'print RbConfig::["ruby_version"]')"
-          export PATH="$GEM_PATH/bin:$PATH"
-          gem install fastlane --user-install --no-document
           bundle config set --local path 'vendor/bundle'
           bundle install --jobs 4
 

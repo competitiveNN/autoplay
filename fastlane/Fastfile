@@ -1,6 +1,6 @@
 default_platform(:android)
 
-platform_name android
+platform_name :android
 app_package_name "com.fra.autoplay"
 
 lane :metadata do
