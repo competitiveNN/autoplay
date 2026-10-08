@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
@@ -21,7 +22,24 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AutoPlay.Settings">
+        android:theme="@style/Theme.AutoPlay.Settings" >
+
+        <!--
+             The app initializes WorkManager on demand (AutoPlayApplication implements
+             Configuration.Provider and calls WorkManager#getInstance). Drop the
+             auto-injected WorkManagerInitializer so startup is not doubled and the
+             ReleaseWorkManagerInitializer lint check passes.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="com.fra.autoplay.androidx-startup"
+            android:exported="false"
+            tools:node="merge" >
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <activity
             android:name=".MainActivity"

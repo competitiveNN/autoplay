@@ -13,3 +13,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AutoPlay"
 include(":app")
+include(":benchmark")

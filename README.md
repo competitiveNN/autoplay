@@ -117,7 +117,9 @@ Requires Android SDK 34 and Java 21 (Temurin). CI builds debug **and** release (
 
 ```bash
 ./gradlew testDebugUnitTest      # Robolectric unit tests
-./gradlew lintDebug              # Android Lint (baseline in lint.xml)
+./gradlew recordPaparazziDebug   # screenshot tests for main/settings/about/widget
+./gradlew :app:jacocoTestReport # aggregated JaCoCo coverage (CSV/HTML/XML)
+./gradlew lintDebug              # Android Lint (baseline in lint-baseline.xml)
 ./gradlew connectedDebugAndroidTest  # Espresso (needs device/emulator)
 ```
 
@@ -127,6 +129,9 @@ Tests cover:
 - `QuickSettingsTileService` state mapping
 - `HeadphoneReceiver` ignoring non-headset and unplug events
 - `BootReceiver` ignoring non-boot events
+- Paparazzi screenshots of `activity_main`, `fragment_settings`, `activity_about`, `widget_autoplay`
+
+Coverage badge: `.github/badges/jacoco.svg` (regenerated on every CI push to `master`/`main`).
 
 ## Diagnostics
 

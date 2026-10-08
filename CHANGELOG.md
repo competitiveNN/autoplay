@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.6.0 (2026-10-08)
+
+### Added
+- `:benchmark` module with `BaselineProfileGenerator` (`androidx.benchmark:benchmark-macro-junit4:1.2.3`, `androidx.baselineprofile` plugin). Generator uses `MacrobenchmarkScope` (`pressHome()`, `startActivityAndWait()`, `device.waitForIdle()`) — run `./gradlew :benchmark:generateBaselineProfile` on a rooted device/emulator.
+- Dedicated `lint` CI job (runs before `build-and-test`, uploads `lint-results-debug.html` artifact).
+- `recordPaparazziDebug` step in CI so screenshot diffs are caught on PRs.
+
+### Improved
+- `renovate.json` expanded: `config:recommended` + weekly schedule, grouped AGP/Kotlin/Gradle bumps, benchmark & paparazzi pinned (manual upgrade).
+- `benchmark/README.md` documents the generator API and regeneration steps.
+- Coverage badge generation moved behind a `lint` → `build-and-test` pipeline.
+
+## v1.5.0 (2026-10-08)
+
+### Added
+- Paparazzi screenshot tests for main/settings/about/widget layouts (`ScreenshotTest`, `recordPaparazziDebug`, `.github/workflows/android-ci.yml`)
+- JaCoCo aggregated unit-test coverage (`:app:jacocoTestReport`), SVG badge generation + commit via `cicirello/jacoco-badge-generator`
+- GitHub Release workflow (`.github/workflows/release.yml`): signed AAB + APK artifact, changelog extraction, badge commit
+- WorkManager on-demand initialization: `AutoPlayApplication` implements `Configuration.Provider`, auto-injected `WorkManagerInitializer` removed from merged manifest
+
+### Fixed
+- `WorkManager` not initialized in Robolectric unit tests (root cause: `Application.onCreate` ran before `androidx.startup` providers)
+- Paparazzi `IllegalAccessError` on `Sets.toImmutableEnumSet` (Guava `-android` variant selected by AGP; pinned `-jre` variant via `TargetJvmEnvironment` constraint)
+
+### Improved
+- `gradle/wrapper` regenerated from a broken committed `gradlew` (was the distribution's `bin/gradle` script)
+- `app/build.gradle.kts` migrated to version catalog (`libs.*`) + `org.gradle.jacoco` plugin
+
 ## v1.4.0 (2026-10-08)
 
 ### Added

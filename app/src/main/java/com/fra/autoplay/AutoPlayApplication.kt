@@ -1,12 +1,16 @@
 package com.fra.autoplay
 
 import android.app.Application
+import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 
-class AutoPlayApplication : Application() {
+class AutoPlayApplication : Application(), Configuration.Provider {
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder().build()
 
     override fun onCreate() {
         super.onCreate()

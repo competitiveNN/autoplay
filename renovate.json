@@ -1,0 +1,36 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:weekly"
+  ],
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchManagers": ["gradle"],
+      "groupName": "gradle deps",
+      "schedule": ["before 6am on Monday"]
+    },
+    {
+      "matchDepNames": ["com.android.tools.build:gradle"],
+      "groupName": "AGP",
+      "schedule": ["before 6am on Monday"]
+    },
+    {
+      "matchDepNames": ["org.jetbrains.kotlin:kotlin-gradle-plugin"],
+      "groupName": "Kotlin",
+      "schedule": ["before 6am on Monday"]
+    },
+    {
+      "matchDepNames": ["androidx.benchmark:benchmark-macro-junit4", "androidx.benchmark:benchmark-baseline-profile-gradle-plugin"],
+      "groupName": "Benchmark",
+      "enabled": false
+    },
+    {
+      "matchDepNames": ["app.cash.paparazzi:paparazzi", "app.cash.paparazzi:paparazzi-gradle-plugin"],
+      "groupName": "Paparazzi",
+      "enabled": false
+    }
+  ],
+  "schedule": ["before 6am on Monday"]
+}

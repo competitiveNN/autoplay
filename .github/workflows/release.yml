@@ -1,15 +1,17 @@
-name: Android CI
+name: Release
 
 on:
   push:
-    branches: [master, main]
-  pull_request:
-    branches: [master, main]
+    tags:
+      - "v*"
 
 jobs:
-  lint:
+  release:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -33,53 +35,6 @@ jobs:
 
       - name: Grant execute permission
         run: chmod +x ./gradlew
-
-      - name: Run Android Lint
-        run: ./gradlew lintDebug --stacktrace
-
-      - name: Upload lint report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: lint-report
-          path: app/build/reports/lint-results-debug.html
-
-  build-and-test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: lint
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-
-
-      - name: Grant execute permission
-        run: chmod +x ./gradlew
-
-      - name: Build debug APK
-        run: ./gradlew assembleDebug
-
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
-
-      - name: Record Paparazzi screenshots
-        run: ./gradlew recordPaparazziDebug
 
       - name: Validate fastlane metadata
         run: |
@@ -89,22 +44,13 @@ jobs:
           test -f fastlane/metadata/android/de-DE/title.txt || (echo "Missing de-DE title" && exit 1)
           test -f fastlane/metadata/android/de-DE/short_description.txt || (echo "Missing de-DE short_description" && exit 1)
           test -f fastlane/metadata/android/de-DE/full_description.txt || (echo "Missing de-DE full_description" && exit 1)
-          test -f app/src/main/res/values/strings.xml || (echo "Missing base strings" && exit 1)
-          test -f app/src/main/res/values-de/strings.xml || (echo "Missing de strings" && exit 1)
           echo "fastlane metadata OK"
 
-      - name: Build release APK (R8)
-        run: ./gradlew assembleRelease
+      - name: Build signed release AAB + APK
+        run: ./gradlew bundleRelease assembleRelease --console=plain
 
       - name: Generate JaCoCo coverage report
         run: ./gradlew :app:jacocoTestReport
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: jacoco-coverage
-          path: app/build/reports/jacoco/jacocoTestReport/
 
       - name: Generate coverage badge
         uses: cicirello/jacoco-badge-generator@v2
@@ -113,11 +59,9 @@ jobs:
           badges-directory: .github/badges
           generate-coverage-badge: true
           generate-branches-badge: true
-          fail-if-coverage-less-than: 60
           on-missing-report: fail
 
       - name: Commit coverage badge
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -125,11 +69,20 @@ jobs:
           git commit -m "Update coverage badge [skip ci]" || echo "No badge changes"
           git push
 
-      - name: Upload APKs
-        uses: actions/upload-artifact@v4
-        if: success()
+      - name: Extract changelog for tag
+        id: changelog
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "## v$TAG" > /tmp/release_body.md
+          awk '/^## v'"$TAG"'/{flag=1; next} /^## v/{flag=0} flag' CHANGELOG.md >> /tmp/release_body.md || true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: autoplay-apks
-          path: |
-            app/build/outputs/apk/debug/*.apk
+          name: AutoPlay v${{ steps.changelog.outputs.version }}
+          body_path: /tmp/release_body.md
+          files: |
             app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+          generate_release_notes: true
