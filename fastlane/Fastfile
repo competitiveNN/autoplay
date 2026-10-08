@@ -27,7 +27,7 @@ lane :metadata do
   git_commit(path: "fastlane/metadata/android", message: "Update metadata for v#{version}")
 end
 
-lane :screengrab do
+lane :screenshots do
   screengrab(
     package_name: "com.fra.autoplay",
     locales: ["en-US", "de-DE"],

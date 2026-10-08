@@ -49,7 +49,7 @@ jobs:
           profile: pixel_6
           avd-name: screengrab
           emulator-boot-timeout: 900
-          script: ./gradlew assembleDebug assembleDebugAndroidTest && bundle exec fastlane screengrab
+          script: ./gradlew assembleDebug assembleDebugAndroidTest && bundle exec fastlane screenshots
 
       - name: Commit screenshots
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
