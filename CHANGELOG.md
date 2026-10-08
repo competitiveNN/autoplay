@@ -1,5 +1,24 @@
 # Changelog
 
+## v2.1.0 (2026-10-08)
+
+### Added
+- **Quick Settings Tile** — Android 14+ user-selectable tile for `QuickSettingsTileService` (added via `android.service.quicksettings.action.QS_TILE` intent filter in `AndroidManifest.xml`). Tile shows ACTIVE/INACTIVE state based on service status and toggles the service on click.
+- **Lint baseline auto-update CI** — weekly schedule (`cron: '0 6 * * 1'`) runs `updateLintBaseline` and commits `app/lint-baseline.xml`.
+
+### Improved
+- `QuickSettingsTileService.updateTile()` now uses `qsTile.label` from `R.string.app_name` and `qsTile.contentDescription` from `R.string.quick_settings_tile_label`.
+
+## v2.0.0 (2026-10-08)
+
+### Added
+- **Widget configuration activity** (`WidgetConfigActivity`) — long-press the widget → "Configure" → customize transparency, show/hide icon, show/hide label, and compact mode. Wired into `widget_autoplay_info.xml` via `android:configure`.
+- **Backup/restore dialog** — Settings → Backup/Restore now shows a dialog with an editable JSON field (instead of clipboard-only). Backup copies to clipboard; restore pastes JSON into the dialog.
+- **Widget transparency** — `AutoPlayWidgetProvider` reads `widget_transparency_<id>` from `autoplay_widget_config` and applies `setBackgroundColor` with alpha.
+
+### Improved
+- `SettingsFragment` refactored: `showBackupDialog(json)` and `showRestoreDialog()` replace inline clipboard logic.
+
 ## v1.9.0 (2026-10-08)
 
 ### Added
