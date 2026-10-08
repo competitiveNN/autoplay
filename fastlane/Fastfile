@@ -29,7 +29,7 @@ end
 
 lane :screenshots do
   screengrab(
-    package_name: "com.fra.autoplay",
+    app_package_name: "com.fra.autoplay",
     locales: ["en-US", "de-DE"],
     screenshot_path: "fastlane/metadata/android"
   )
