@@ -21,6 +21,7 @@ android {
         versionName = "1.9.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
 
     signingConfigs {
@@ -64,6 +65,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.12"
     }
 
     buildFeatures {

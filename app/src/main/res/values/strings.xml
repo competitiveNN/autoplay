@@ -96,4 +96,12 @@
     <string name="settings_backup_done">Settings copied to clipboard</string>
     <string name="settings_restore_done">Settings restored</string>
     <string name="settings_restore_failed">Restore failed — invalid data</string>
+
+    <!-- Widget Configuration -->
+    <string name="widget_config_title">Configure Widget</string>
+    <string name="widget_config_transparency">Background Transparency</string>
+    <string name="widget_config_show_icon">Show Icon</string>
+    <string name="widget_config_show_label">Show Status Label</string>
+    <string name="widget_config_compact_mode">Compact Mode (hide toggle)</string>
+    <string name="widget_config_save">Save</string>
 </resources>

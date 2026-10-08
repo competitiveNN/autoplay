@@ -64,6 +64,12 @@
             android:parentActivityName=".SettingsActivity"
             android:theme="@style/Theme.AutoPlay.Settings" />
 
+        <activity
+            android:name=".widget.WidgetConfigActivity"
+            android:exported="false"
+            android:parentActivityName=".SettingsActivity"
+            android:theme="@style/Theme.AutoPlay.Settings" />
+
         <service
             android:name=".MediaPlaybackService"
             android:enabled="true"

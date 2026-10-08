@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_config_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Transparency -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_config_transparency"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
+
+        <SeekBar
+            android:id="@+id/transparency_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/transparency_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0%"
+            android:gravity="center"
+            android:textColor="?android:attr/textColorSecondary" />
+
+        <!-- Show Icon -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/show_icon_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_config_show_icon"
+            android:layout_marginTop="16dp" />
+
+        <!-- Show Label -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/show_label_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_config_show_label"
+            android:layout_marginTop="16dp" />
+
+        <!-- Compact Mode -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/compact_mode_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_config_compact_mode"
+            android:layout_marginTop="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@android:string/cancel"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_config_save" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

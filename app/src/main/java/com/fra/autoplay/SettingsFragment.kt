@@ -148,9 +148,11 @@ class SettingsFragment : Fragment() {
 
         backupButton.setOnClickListener {
             val json = PreferencesHelper.exportToJson(requireContext())
-            val clipboard = requireContext().getSystemService(android.content.ClipboardManager::class.java)
-            clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("autoplay_backup", json))
-            Toast.makeText(requireContext(), R.string.settings_backup_done, Toast.LENGTH_SHORT).show()
+            showBackupDialog(json)
+        }
+
+        restoreButton.setOnClickListener {
+            showRestoreDialog()
         }
 
         restoreButton.setOnClickListener {
@@ -265,5 +267,41 @@ class SettingsFragment : Fragment() {
 
     private fun formatDelay(ms: Long): String {
         return if (ms == 0L) "Immediate" else "${ms} ms"
+    }
+
+    private fun showBackupDialog(json: String) {
+        val clipboard = requireContext().getSystemService(android.content.ClipboardManager::class.java)
+        clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("autoplay_backup", json))
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_backup_title)
+            .setMessage(R.string.settings_backup_done)
+            .setPositiveButton("Copy JSON") { _, _ ->
+                clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("autoplay_backup", json))
+                Toast.makeText(requireContext(), R.string.settings_backup_done, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(android.R.string.ok, null)
+            .show()
+    }
+
+    private fun showRestoreDialog() {
+        val input = android.widget.EditText(requireContext()).apply {
+            hint = "Paste backup JSON here"
+            setMinLines(4)
+            setMaxLines(10)
+        }
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_restore_title)
+            .setView(input)
+            .setPositiveButton(R.string.settings_restore_title) { _, _ ->
+                val text = input.text?.toString()
+                if (!text.isNullOrBlank() && PreferencesHelper.importFromJson(requireContext(), text)) {
+                    Toast.makeText(requireContext(), R.string.settings_restore_done, Toast.LENGTH_SHORT).show()
+                    requireActivity().recreate()
+                } else {
+                    Toast.makeText(requireContext(), R.string.settings_restore_failed, Toast.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 }
