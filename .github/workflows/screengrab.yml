@@ -50,7 +50,17 @@ jobs:
           avd-name: screengrab
           disk-size: 4096M
           emulator-boot-timeout: 900
-          script: ./gradlew assembleDebug assembleDebugAndroidTest && bundle exec fastlane screenshots
+          script: |
+            ./gradlew assembleDebug assembleDebugAndroidTest
+            echo "Waiting for package manager service..."
+            for i in {1..60}; do
+              if adb -s emulator-5554 shell pm list packages >/dev/null 2>&1; then
+                echo "Package manager ready"
+                break
+              fi
+              sleep 5
+            done
+            bundle exec fastlane screenshots
 
       - name: Commit screenshots
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
