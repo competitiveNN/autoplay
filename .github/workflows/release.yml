@@ -36,6 +36,11 @@ jobs:
       - name: Grant execute permission
         run: chmod +x ./gradlew
 
+      - name: Setup release keystore
+        if: env.KEYSTORE_BASE64 != ''
+        run: |
+          echo "${KEYSTORE_BASE64}" | base64 -d > app/release.keystore
+
       - name: Validate fastlane metadata
         run: |
           test -f fastlane/metadata/android/en-US/title.txt || (echo "Missing en-US title" && exit 1)
@@ -48,6 +53,10 @@ jobs:
 
       - name: Build signed release AAB + APK
         run: ./gradlew bundleRelease assembleRelease --console=plain
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Generate JaCoCo coverage report
         run: ./gradlew :app:jacocoTestReport
