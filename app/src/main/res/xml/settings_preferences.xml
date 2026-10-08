@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/category_general">
+
+        <ListPreference
+            android:key="resume_delay_ms"
+            android:title="@string/settings_resume_delay_title"
+            android:summary="@string/settings_resume_delay_summary"
+            android:entries="@array/resume_delay_entries"
+            android:entryValues="@array/resume_delay_values"
+            android:defaultValue="0"
+            android:dialogTitle="@string/settings_resume_delay_dialog" />
+
+        <SwitchPreferenceCompat
+            android:key="filter_headphones"
+            android:title="@string/settings_filter_headphones_title"
+            android:summary="@string/settings_filter_headphones_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            android:key="battery_reminder"
+            android:title="@string/settings_battery_reminder_title"
+            android:summary="@string/settings_battery_reminder_summary"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category_about">
+
+        <Preference
+            android:title="@string/settings_version"
+            android:summary="@string/settings_version_summary"
+            android:enabled="false" />
+
+        <Preference
+            android:key="test_resume"
+            android:title="@string/settings_test_resume"
+            android:summary="@string/settings_test_resume_summary" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -2,6 +2,8 @@ package com.fra.autoplay
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
@@ -46,5 +48,19 @@ class MainActivity : AppCompatActivity() {
         statusText.setTextColor(
             getColor(if (isRunning) R.color.status_on else R.color.status_off)
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_settings) {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -73,3 +73,27 @@ Tests cover:
 ## License
 
 MIT
+
+## Troubleshooting
+
+### Media doesn't resume when headphones connect
+1. **Check service is running** — The ON/OFF toggle in the app must show "Service running"
+2. **Disable battery optimization** — Go to Settings → Apps → AutoPlay → Battery → Unrestricted
+3. **Verify headphone type** — In Settings, ensure "Filter by Headphone Type" matches your headphones (or disable filter for all types)
+4. **Grant notification access** — Some Android versions require notification access for MediaSessionManager
+
+### Service keeps getting killed
+- Disable battery optimization for AutoPlay (Settings → Apps → AutoPlay → Battery → Unrestricted)
+- On some OEM skins (MIUI, OneUI, ColorOS), also enable "Auto-start" and "Background run" in app settings
+
+### Settings don't take effect immediately
+- Resume delay and filter changes apply on next headphone connection
+- Use "Test Resume" in Settings to verify the service responds
+
+### Build fails with Java version error
+- Use Java 17 or 21 (not Java 25+)
+- Set `JAVA_HOME` before running `./gradlew`
+
+### "SDK location not found" error
+- Set `ANDROID_HOME` environment variable to your Android SDK path
+- Or create `local.properties` with `sdk.dir=/path/to/android/sdk`

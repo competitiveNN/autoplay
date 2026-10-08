@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/delay_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_resume_delay_title" />
+
+    <TextView
+        android:id="@+id/delay_value_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Immediate"
+        android:textColor="?android:attr/textColorSecondary" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/filter_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_filter_headphones_title" />
+
+    <TextView
+        android:id="@+id/filter_value_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="All types"
+        android:textColor="?android:attr/textColorSecondary" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/battery_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_battery_reminder_title" />
+
+    <Button
+        android:id="@+id/test_resume_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_test_resume" />
+</LinearLayout>

@@ -13,4 +13,38 @@
     <string name="service_started">AutoPlay service started</string>
     <string name="service_stopped">AutoPlay service stopped</string>
     <string name="error">Error: %s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">AutoPlay Settings</string>
+    <string name="category_general">General</string>
+    <string name="category_about">About</string>
+    <string name="settings_resume_delay_title">Resume Delay</string>
+    <string name="settings_resume_delay_summary">Delay before resuming playback after headphones connect</string>
+    <string name="settings_resume_delay_dialog">Select resume delay</string>
+    <string name="settings_filter_headphones_title">Filter by Headphone Type</string>
+    <string name="settings_filter_headphones_summary">Only resume for selected headphone types (otherwise all types)</string>
+    <string name="settings_battery_reminder_title">Battery Optimization Reminder</string>
+    <string name="settings_battery_reminder_summary">Show warning if battery optimization is enabled for this app</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_summary">1.0.1</string>
+    <string name="settings_test_resume">Test Resume</string>
+    <string name="settings_test_resume_summary">Send a test resume command now</string>
+    <string name="settings_test_resume_sent">Test resume command sent</string>
+    <string name="settings_invalid_delay">Invalid delay value</string>
+
+    <!-- Resume delay arrays -->
+    <string-array name="resume_delay_entries">
+        <item>Immediate (0 ms)</item>
+        <item>500 ms</item>
+        <item>1 second</item>
+        <item>2 seconds</item>
+        <item>3 seconds</item>
+    </string-array>
+    <string-array name="resume_delay_values">
+        <item>0</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>3000</item>
+    </string-array>
 </resources>

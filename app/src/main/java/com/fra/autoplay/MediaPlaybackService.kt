@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -16,12 +17,16 @@ import android.media.session.MediaController
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.provider.Settings
 import android.os.IBinder
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 class MediaPlaybackService : Service() {
 
@@ -43,6 +48,22 @@ class MediaPlaybackService : Service() {
             AudioDeviceInfo.TYPE_HEARING_AID -> true
             else -> false
         }
+
+        /** Returns true if the headphone type matches the user's filter preferences. */
+        fun isHeadphoneAllowed(context: Context, device: AudioDeviceInfo): Boolean {
+            if (!PreferencesHelper.isFilterHeadphones(context)) {
+                return true
+            }
+            return when (device.type) {
+                AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+                AudioDeviceInfo.TYPE_WIRED_HEADSET -> true
+                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+                AudioDeviceInfo.TYPE_BLE_HEADSET -> true
+                AudioDeviceInfo.TYPE_USB_HEADSET -> true
+                AudioDeviceInfo.TYPE_HEARING_AID -> true
+                else -> false
+            }
+        }
     }
 
     private lateinit var audioManager: AudioManager
@@ -50,12 +71,15 @@ class MediaPlaybackService : Service() {
     private var headphoneReceiver: HeadphoneConnectionReceiver? = null
     private var batteryOptimizationEnabled = false
     private var audioCallbackRegistered = false
+    private var prefsReceiver: BroadcastReceiver? = null
+    private val delayHandler = Handler(Looper.getMainLooper())
+    private var resumeDelayMs: Long = 0
 
     private val audioDeviceCallback = object : AudioDeviceCallback() {
         override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
             super.onAudioDevicesAdded(addedDevices)
-            if (addedDevices.any { isHeadphone(it) }) {
-                resumeMediaIfStopped()
+            if (addedDevices.any { isHeadphoneAllowed(this@MediaPlaybackService, it) }) {
+                triggerResume()
             }
         }
 
@@ -70,11 +94,21 @@ class MediaPlaybackService : Service() {
         super.onCreate()
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         mediaSessionManager = getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
+        resumeDelayMs = PreferencesHelper.getResumeDelayMs(this)
         createNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
             batteryOptimizationEnabled = !pm.isIgnoringBatteryOptimizations(packageName)
         }
+        // Listen for preference changes
+        prefsReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == PreferencesHelper.ACTION_PREFERENCES_CHANGED) {
+                    resumeDelayMs = PreferencesHelper.getResumeDelayMs(context)
+                }
+            }
+        }
+        registerReceiver(prefsReceiver, IntentFilter(PreferencesHelper.ACTION_PREFERENCES_CHANGED))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -115,9 +149,14 @@ class MediaPlaybackService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         running = false
+        delayHandler.removeCallbacksAndMessages(null)
         if (audioCallbackRegistered) {
             audioManager.unregisterAudioDeviceCallback(audioDeviceCallback)
             audioCallbackRegistered = false
+        }
+        prefsReceiver?.let {
+            try { unregisterReceiver(it) } catch (_: Exception) { /* ignore */ }
+            prefsReceiver = null
         }
         headphoneReceiver?.let {
             try { unregisterReceiver(it) } catch (_: Exception) { /* ignore */ }
@@ -129,7 +168,15 @@ class MediaPlaybackService : Service() {
 
     private fun checkCurrentDevices() {
         val devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-        if (devices.any { isHeadphone(it) }) {
+        if (devices.any { isHeadphoneAllowed(this, it) }) {
+            triggerResume()
+        }
+    }
+
+    internal fun triggerResume() {
+        if (resumeDelayMs > 0) {
+            delayHandler.postDelayed({ resumeMediaIfStopped() }, resumeDelayMs)
+        } else {
             resumeMediaIfStopped()
         }
     }
@@ -139,7 +186,7 @@ class MediaPlaybackService : Service() {
             val sessions = mediaSessionManager.getActiveSessions(null)
             // Prioritize sessions that support transport controls and are closer to playing.
             val candidates = sessions
-                .filter { (it.flags and MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS.toLong()) != 0L }
+                .filter { it.transportControls != null }
                 .sortedByDescending { it.playbackState?.lastPositionUpdateTime ?: 0L }
 
             for (controller in candidates) {
