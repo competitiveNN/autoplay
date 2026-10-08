@@ -53,12 +53,14 @@ jobs:
           script: |
             ./gradlew assembleDebug assembleDebugAndroidTest
             echo "Waiting for package manager service..."
-            for i in {1..60}; do
+            i=0
+            while [ $i -lt 60 ]; do
               if adb -s emulator-5554 shell pm list packages >/dev/null 2>&1; then
                 echo "Package manager ready"
                 break
               fi
               sleep 5
+              i=$((i + 1))
             done
             bundle exec fastlane screenshots
 
