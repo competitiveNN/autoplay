@@ -6,7 +6,7 @@ lane :metadata do
   gradle(task: "clean assembleRelease")
 
   # Capture Play Store screenshots for every configured locale.
-  android_screengrab(
+  screengrab(
     package_name: "com.fra.autoplay",
     locales: ["en-US", "de-DE"],
     screenshot_path: "fastlane/metadata/android"
@@ -28,7 +28,7 @@ lane :metadata do
 end
 
 lane :screengrab do
-  android_screengrab(
+  screengrab(
     package_name: "com.fra.autoplay",
     locales: ["en-US", "de-DE"],
     screenshot_path: "fastlane/metadata/android"
