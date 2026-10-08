@@ -46,7 +46,7 @@ jobs:
           bundle install --jobs 4
 
       - name: Create emulator and take screenshots
-        uses: reactivecircles/android-emulator-runner@v29
+        uses: ReactiveCircus/android-emulator-runner@v2.29.0
         with:
           api-level: 34
           target: google_apis
