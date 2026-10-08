@@ -101,6 +101,11 @@ app/
 │       ├── MainActivityTest.kt
 │       ├── SettingsActivityTest.kt
 │       └── PreferencesHelperIntegrationTest.kt
+├── compose/                              # Shared Compose UI components module
+│   ├── src/main/java/com/fra/autoplay/compose/
+│   │   ├── SettingComponents.kt           # Reusable setting items (SwitchSettingItem, etc.)
+│   │   └── AutoPlaySettingsScreen.kt      # Compose-based settings screen
+│   └── src/main/res/values/strings.xml    # Compose module strings
 ├── fastlane/metadata/android/               # Play Store / F-Droid (en-US, de-DE)
 └── JETPACK_COMPOSE_MIGRATION_PLAN.md
 ```
@@ -117,8 +122,8 @@ Requires Android SDK 34 and Java 21 (Temurin). CI builds debug **and** release (
 
 ```bash
 ./gradlew testDebugUnitTest      # Robolectric unit tests
-./gradlew recordPaparazziDebug   # screenshot tests for main/settings/about/widget
-./gradlew :app:jacocoTestReport # aggregated JaCoCo coverage (CSV/HTML/XML)
+./gradlew recordPaparazziDebug   # screenshot tests (main/settings/about/widget + Compose UI)
+./gradlew :app:jacocoTestReport  # aggregated JaCoCo coverage (CSV/HTML/XML)
 ./gradlew lintDebug              # Android Lint (baseline in lint-baseline.xml)
 ./gradlew connectedDebugAndroidTest  # Espresso (needs device/emulator)
 ./gradlew :benchmark:connectedDebugAndroidTest  # Macrobenchmark startup (needs device/emulator)
@@ -132,6 +137,8 @@ Tests cover:
 - `HeadphoneReceiver` ignoring non-headset and unplug events
 - `BootReceiver` ignoring non-boot events
 - Paparazzi screenshots of `activity_main`, `fragment_settings`, `activity_about`, `widget_autoplay`
+- Paparazzi screenshots of Compose `AutoPlaySettingsScreen`, `SwitchSettingItem`, `ButtonSettingItem`, `DropdownSettingItem`
+- Compose benchmark metrics: `composeSettingsScrollPerformance()`, `composeSettingsStartup()`
 
 Coverage badge: `.github/badges/jacoco.svg` (regenerated on every CI push to `master`/`main`).
 

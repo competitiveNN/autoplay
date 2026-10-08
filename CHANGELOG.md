@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.2.0 (2026-10-08)
+
+### Added
+- **`:compose` module** — new shared Jetpack Compose UI module with reusable setting components (`SwitchSettingItem`, `ButtonSettingItem`, `DropdownSettingItem`, `SettingsCard`, `SettingSectionHeader`).
+- **Compose-based Settings screen** — `AutoPlaySettingsScreen` migrates the Settings UI from XML/Views to Jetpack Compose. `SettingsActivity` and `SettingsFragment` now host Compose content via `ComposeView`.
+- **Compose Paparazzi screenshot tests** — 4 new screenshot tests for `AutoPlaySettingsScreen` and shared components (`SwitchSettingItem`, `ButtonSettingItem`, `DropdownSettingItem`).
+- **Compose benchmark metrics** — `FrameTimingBenchmarkTest` extended with `composeSettingsScrollPerformance()` and `composeSettingsStartup()` to measure Compose rendering and scroll performance.
+
+### Improved
+- `SettingsFragment` simplified to a thin wrapper around `ComposeView` with `AutoPlaySettingsScreen`.
+- `SettingsActivity` uses `ComposeView.setContent()` directly.
+- Enabled `buildFeatures.compose = true` in `:app` module.
+
 ## v2.1.0 (2026-10-08)
 
 ### Added

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_resume_delay_title">Resume Delay</string>
+    <string name="settings_filter_headphones_title">Filter Headphones</string>
+    <string name="settings_battery_reminder_title">Battery Reminder</string>
+    <string name="settings_smart_resume_title">Smart Resume</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_diagnostics_title">Diagnostics</string>
+    <string name="settings_backup_title">Backup</string>
+    <string name="settings_restore_title">Restore</string>
+    <string name="settings_backup_done">Backup copied to clipboard</string>
+    <string name="settings_restore_done">Restore completed</string>
+    <string name="settings_restore_failed">Restore failed — invalid JSON</string>
+    <string name="settings_test_resume">Test Resume</string>
+    <string name="settings_test_resume_sent">Test resume sent</string>
+    <string name="settings_invalid_delay">Invalid delay value</string>
+    <string name="settings_diagnostics_enabled">Diagnostics enabled</string>
+    <string name="settings_diagnostics_disabled">Diagnostics disabled</string>
+    <string name="settings_exclude_apps_title">Excluded Apps</string>
+    <string name="settings_resume_delay_dialog">Set Delay (ms)</string>
+    <string name="about_title">About</string>
+    <string name="app_name">AutoPlay</string>
+    <string name="status_on">Service running</string>
+    <string name="status_off">Service stopped</string>
+    <string name="toggle_label">AutoPlay</string>
+    <string name="app_description">Automatically resumes media playback when headphones are connected.</string>
+    <string name="service_started">AutoPlay started</string>
+    <string name="service_stopped">AutoPlay stopped</string>
+    <string name="error">Error: %1$s</string>
+</resources>

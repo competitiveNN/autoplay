@@ -55,4 +55,36 @@ class FrameTimingBenchmarkTest {
         // Measure frame timing of the main activity (toggle ON/OFF, etc.)
         // TODO: Add UiAutomator interactions to exercise the main UI.
     }
+
+    // Compose-specific benchmarks
+
+    @Test
+    fun composeSettingsScrollPerformance() = benchmarkRule.measureRepeated(
+        packageName = "com.fra.autoplay",
+        metrics = listOf(FrameTimingMetric()),
+        compilationMode = CompilationMode.DEFAULT,
+        iterations = 10
+    ) {
+        pressHome()
+        startActivityAndWait()
+        device.waitForIdle()
+
+        // Compose Settings screen rendering and scroll performance
+        // TODO: Add UiAutomator interactions to scroll the Compose settings list.
+    }
+
+    @Test
+    fun composeSettingsStartup() = benchmarkRule.measureRepeated(
+        packageName = "com.fra.autoplay",
+        metrics = listOf(FrameTimingMetric()),
+        compilationMode = CompilationMode.DEFAULT,
+        iterations = 10
+    ) {
+        pressHome()
+        startActivityAndWait()
+        device.waitForIdle()
+
+        // Measure Compose initial render performance
+        // TODO: Add UiAutomator interactions to open the Compose settings screen.
+    }
 }

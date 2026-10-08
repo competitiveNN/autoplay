@@ -42,4 +42,78 @@ class ScreenshotTest {
             paparazzi.inflate(R.layout.widget_autoplay)
         )
     }
+
+    // Compose-based screenshots
+    @Test
+    fun composeSettingsScreen_screenshot() {
+        paparazzi.snapshot {
+            com.fra.autoplay.compose.AutoPlaySettingsScreen(
+                onAboutClick = {},
+                onBackupClick = {},
+                onRestoreClick = {},
+                delayEnabled = false,
+                delaySubtitle = "Immediate",
+                filterEnabled = true,
+                filterSubtitle = "Filtered",
+                batteryEnabled = true,
+                smartResumeEnabled = true,
+                smartResumeSubtitle = "Learned from 42 connections",
+                diagnosticsEnabled = false,
+                diagnosticsSubtitle = "Disabled",
+                themeOptions = listOf("System", "Light", "Dark"),
+                selectedTheme = "System",
+                onDelayToggle = {},
+                onFilterToggle = {},
+                onBatteryToggle = {},
+                onSmartResumeToggle = {},
+                onDiagnosticsToggle = {},
+                onThemeSelected = {},
+                settingsTitle = "Settings",
+                resumeDelayTitle = "Resume Delay",
+                filterHeadphonesTitle = "Filter Headphones",
+                batteryReminderTitle = "Battery Reminder",
+                smartResumeTitle = "Smart Resume",
+                themeTitle = "Theme",
+                diagnosticsTitle = "Diagnostics",
+                backupTitle = "Backup",
+                restoreTitle = "Restore",
+                aboutTitle = "About"
+            )
+        }
+    }
+
+    @Test
+    fun composeSwitchSettingItem_screenshot() {
+        paparazzi.snapshot {
+            com.fra.autoplay.compose.SwitchSettingItem(
+                title = "Test Switch",
+                subtitle = "Subtitle text",
+                checked = true,
+                onCheckedChange = {}
+            )
+        }
+    }
+
+    @Test
+    fun composeButtonSettingItem_screenshot() {
+        paparazzi.snapshot {
+            com.fra.autoplay.compose.ButtonSettingItem(
+                title = "Test Button",
+                subtitle = "Tap to open",
+                onClick = {}
+            )
+        }
+    }
+
+    @Test
+    fun composeDropdownSettingItem_screenshot() {
+        paparazzi.snapshot {
+            com.fra.autoplay.compose.DropdownSettingItem(
+                title = "Theme",
+                options = listOf("System", "Light", "Dark"),
+                selectedOption = "System",
+                onOptionSelected = {}
+            )
+        }
+    }
 }

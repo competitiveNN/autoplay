@@ -17,8 +17,8 @@ android {
         applicationId = "com.fra.autoplay"
         minSdk = 26
         targetSdk = 34
-        versionCode = 12
-        versionName = "2.1.0"
+        versionCode = 13
+        versionName = "2.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
@@ -72,7 +72,7 @@ android {
     }
 
     buildFeatures {
-        compose = false
+        compose = true
     }
     testOptions {
         unitTests.isIncludeAndroidResources = true
@@ -117,6 +117,12 @@ dependencies {
     // Firebase Crashlytics (optional, controlled by diagnostics preference)
     implementation(libs.firebase.bom)
     implementation(libs.crashlytics)
+    // :compose module
+    implementation(project(":compose"))
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.material3)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.activity)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
