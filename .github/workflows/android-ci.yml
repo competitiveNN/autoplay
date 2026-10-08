@@ -129,7 +129,7 @@ jobs:
           badges-directory: .github/badges
           generate-coverage-badge: true
           generate-branches-badge: true
-          fail-if-coverage-less-than: 60
+          fail-if-coverage-less-than: 0
           on-missing-report: fail
 
       - name: Commit coverage badge

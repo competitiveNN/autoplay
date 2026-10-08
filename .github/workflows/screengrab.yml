@@ -7,8 +7,8 @@ on:
 
 jobs:
   screengrab:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
+    runs-on: macos-latest
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
@@ -37,10 +37,10 @@ jobs:
 
       - name: Install fastlane + bundle
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq libgl1 libegl1 libxkbcommon0 libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-sync1 libxcb-xfixes0 libxcb-xkb1 libdbus-1-3
-          sudo apt-get install -y -qq ruby ruby-dev
-          gem install fastlane -N --no-document
+          export GEM_HOME="$HOME/.gem"
+          export GEM_PATH="$HOME/.gem/ruby/$(ruby -e 'print RbConfig::["ruby_version"]')"
+          export PATH="$GEM_PATH/bin:$PATH"
+          gem install fastlane --user-install --no-document
           bundle config set --local path 'vendor/bundle'
           bundle install --jobs 4
 
