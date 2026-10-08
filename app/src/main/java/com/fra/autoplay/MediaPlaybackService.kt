@@ -185,8 +185,15 @@ class MediaPlaybackService : Service() {
     }
 
     internal fun triggerResume() {
-        if (resumeDelayMs > 0) {
-            delayHandler.postDelayed({ resumeMediaIfStopped() }, resumeDelayMs)
+        val context = this
+        val delay = if (PreferencesHelper.isSmartResumeEnabled(context)) {
+            PreferencesHelper.getSmartDelaySuggestion(context)
+        } else {
+            resumeDelayMs
+        }
+        
+        if (delay > 0) {
+            delayHandler.postDelayed({ resumeMediaIfStopped() }, delay)
         } else {
             resumeMediaIfStopped()
         }

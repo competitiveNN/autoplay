@@ -38,6 +38,19 @@
         android:layout_height="wrap_content"
         android:text="@string/settings_battery_reminder_title" />
 
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/smart_resume_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_smart_resume_title" />
+
+    <TextView
+        android:id="@+id/smart_resume_value_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Learning..."
+        android:textColor="?android:attr/textColorSecondary" />
+
     <Button
         android:id="@+id/excluded_apps_button"
         android:layout_width="match_parent"
@@ -56,4 +69,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/settings_test_resume" />
+
+    <Button
+        android:id="@+id/about_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/settings_about_title" />
 </LinearLayout>

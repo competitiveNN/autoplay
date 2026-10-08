@@ -33,12 +33,16 @@
     <string name="settings_battery_reminder_title">Battery Optimization Reminder</string>
     <string name="settings_battery_reminder_summary">Show warning if battery optimization is enabled for this app</string>
     <string name="settings_exclude_apps_title">Exclude Apps from Auto-Resume</string>
+    <string name="settings_smart_resume_title">Smart Resume Learning</string>
+    <string name="settings_smart_resume_summary">Learn your usage patterns to optimize resume delay automatically</string>
     <string name="settings_version">Version</string>
-    <string name="settings_version_summary">1.0.1</string>
+    <string name="settings_version_summary">1.1.0</string>
     <string name="settings_test_resume">Test Resume</string>
     <string name="settings_test_resume_summary">Send a test resume command now</string>
     <string name="settings_test_resume_sent">Test resume command sent</string>
     <string name="settings_invalid_delay">Invalid delay value</string>
+    <string name="settings_about_title">About &amp; Licenses</string>
+    <string name="settings_about_summary">Privacy policy, open source licenses, and version info</string>
 
     <!-- Resume delay arrays -->
     <string-array name="resume_delay_entries">
@@ -55,4 +59,14 @@
         <item>2000</item>
         <item>3000</item>
     </string-array>
-</resources>
+
+    <!-- About / Privacy / Licenses -->
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_body">AutoPlay does not collect, store, or transmit any personal data. All preferences are stored locally on your device. The app requires the following permissions:\n\n• FOREGROUND_SERVICE / FOREGROUND_SERVICE_MEDIA_PLAYBACK — to run a persistent background service that detects headphone connections\n• RECEIVE_BOOT_COMPLETED — to restart the service after device reboot\n• MODIFY_AUDIO_SETTINGS — to monitor audio device changes\n• REQUEST_IGNORE_BATTERY_OPTIMIZATIONS — optional, to request exemption from battery optimization for reliable operation\n\nNo analytics, crash reporting, or network requests are made by this app.</string>
+    <string name="licenses_title">Open Source Licenses</string>
+    <string name="licenses_body">This app includes the following open source libraries:\n\n• AndroidX libraries (Apache 2.0)\n• Google Material Components (Apache 2.0)\n• Kotlin Standard Library (Apache 2.0)\n• Robolectric (Apache 2.0)\n• Espresso (Apache 2.0)\n• Mockito (MIT)\n• JUnit (EPL 2.0)\n\nFull license texts are available in the project repository.</string>
+    <string name="about_title">About AutoPlay</string>
+    <string name="about_body">AutoPlay automatically resumes media playback when headphones are connected.\n\nVersion: %s\n\nSource code: https://github.com/fra/autoplay\n\nLicensed under MIT License.</string>
+    <string name="about_version_button">Copy Version</string>
+    <string name="about_version_toast">Version copied to clipboard</string>
+    </resources>

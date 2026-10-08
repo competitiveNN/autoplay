@@ -1,5 +1,6 @@
 package com.fra.autoplay
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +18,13 @@ class SettingsFragment : Fragment() {
     private lateinit var delaySwitch: Switch
     private lateinit var filterSwitch: Switch
     private lateinit var batterySwitch: Switch
+    private lateinit var smartResumeSwitch: Switch
     private lateinit var delayValueText: TextView
     private lateinit var filterValueText: TextView
+    private lateinit var smartResumeValueText: TextView
     private lateinit var excludedAppsButton: Button
     private lateinit var excludedAppsValueText: TextView
+    private lateinit var aboutButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,17 +40,22 @@ class SettingsFragment : Fragment() {
         delaySwitch = view.findViewById(R.id.delay_switch)
         filterSwitch = view.findViewById(R.id.filter_switch)
         batterySwitch = view.findViewById(R.id.battery_switch)
+        smartResumeSwitch = view.findViewById(R.id.smart_resume_switch)
         delayValueText = view.findViewById(R.id.delay_value_text)
         filterValueText = view.findViewById(R.id.filter_value_text)
+        smartResumeValueText = view.findViewById(R.id.smart_resume_value_text)
         excludedAppsButton = view.findViewById(R.id.excluded_apps_button)
         excludedAppsValueText = view.findViewById(R.id.excluded_apps_value_text)
+        aboutButton = view.findViewById(R.id.about_button)
 
         val delayMs = PreferencesHelper.getResumeDelayMs(requireContext())
         delayValueText.text = formatDelay(delayMs)
         delaySwitch.isChecked = delayMs > 0
         filterSwitch.isChecked = PreferencesHelper.isFilterHeadphones(requireContext())
         batterySwitch.isChecked = PreferencesHelper.isBatteryReminderEnabled(requireContext())
+        smartResumeSwitch.isChecked = PreferencesHelper.isSmartResumeEnabled(requireContext())
         filterValueText.text = if (filterSwitch.isChecked) "Filtered" else "All types"
+        updateSmartResumeText()
         updateExcludedAppsText()
 
         delaySwitch.setOnCheckedChangeListener { _, checked ->
@@ -69,8 +78,19 @@ class SettingsFragment : Fragment() {
             PreferencesHelper.setBatteryReminder(requireContext(), checked)
         }
 
+        smartResumeSwitch.setOnCheckedChangeListener { _, checked ->
+            PreferencesHelper.setSmartResumeEnabled(requireContext(), checked)
+            updateSmartResumeText()
+            PreferencesHelper.notifyPreferencesChanged(requireContext())
+        }
+
         excludedAppsButton.setOnClickListener {
             showExcludedAppsDialog()
+        }
+
+        aboutButton.setOnClickListener {
+            val intent = Intent(requireContext(), AboutActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -133,6 +153,21 @@ class SettingsFragment : Fragment() {
             "None"
         } else {
             "${excluded.size} app(s) excluded"
+        }
+    }
+
+    private fun updateSmartResumeText() {
+        val enabled = PreferencesHelper.isSmartResumeEnabled(requireContext())
+        if (enabled) {
+            val stats = PreferencesHelper.getUsageStats(requireContext())
+            val total = stats["total_events"] ?: 0
+            smartResumeValueText.text = if (total > 0) {
+                "Learned from $total connections"
+            } else {
+                "Learning your patterns..."
+            }
+        } else {
+            smartResumeValueText.text = "Disabled"
         }
     }
 
