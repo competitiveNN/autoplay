@@ -1,0 +1,59 @@
+default_platform(:android)
+
+platform_name android
+app_package_name "com.fra.autoplay"
+
+lane :metadata do
+  ensure_git_status_clean(branch: "master")
+
+  gradle(task: "clean assembleRelease")
+
+  # Capture Play Store screenshots for every configured locale.
+  android_screengrab(
+    package_name: "com.fra.autoplay",
+    locales: ["en-US", "de-DE"],
+    screenshot_path: "fastlane/metadata/android"
+  )
+
+  # Update the per-release changelogs from CHANGELOG.md.
+  changelog = File.read("../CHANGELOG.md").match(/## v([\d.]+) \(([\d-]+)\)/)
+  version = changelog[1]
+  date = changelog[2]
+  body = File.read("../CHANGELOG.md").scan(/## v#{Regexp.escape(version)}.*?(?=## v|\z)/ms)[0]
+  body = body.gsub(/^## .*?\n/, "").strip
+
+  ["en-US", "de-DE"].each do |locale|
+    path = "fastlane/metadata/android/#{locale}/changelogs/#{version}.txt"
+    File.write(path, body)
+  end
+
+  git_commit(path: "fastlane/metadata/android", message: "Update metadata for v#{version}")
+end
+
+lane :screengrab do
+  android_screengrab(
+    package_name: "com.fra.autoplay",
+    locales: ["en-US", "de-DE"],
+    screenshot_path: "fastlane/metadata/android"
+  )
+end
+
+lane :release do
+  version = prompt(text: "Version (e.g. 1.7.0): ")
+  version_code = version.gsub(".", "").to_i
+
+  ensure_git_status_clean(branch: "master")
+  gradle(
+    task: "assembleRelease",
+    properties: {
+      "versionName" => version,
+      "versionCode" => version_code
+    }
+  )
+
+  upload_to_play_store(
+    track: "internal",
+    release_status: "completed",
+    json_key: ENV["PLAY_STORE_JSON_KEY"]
+  )
+end

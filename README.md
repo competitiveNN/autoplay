@@ -121,6 +121,7 @@ Requires Android SDK 34 and Java 21 (Temurin). CI builds debug **and** release (
 ./gradlew :app:jacocoTestReport # aggregated JaCoCo coverage (CSV/HTML/XML)
 ./gradlew lintDebug              # Android Lint (baseline in lint-baseline.xml)
 ./gradlew connectedDebugAndroidTest  # Espresso (needs device/emulator)
+./gradlew :benchmark:connectedDebugAndroidTest  # Macrobenchmark (needs device/emulator)
 ```
 
 Tests cover:

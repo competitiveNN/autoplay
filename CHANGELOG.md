@@ -1,15 +1,26 @@
 # Changelog
 
+## v1.7.0 (2026-10-08)
+
+### Added
+- `StartupBenchmarkTest` in `:benchmark` — cold/warm/hot startup metrics via `MacrobenchmarkRule.measureRepeated` with `StartupTimingMetric`, `CompilationMode.DEFAULT`, `StartupMode.COLD/WARM/HOT`. Run on a device: `./gradlew :benchmark:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.fra.autoplay.benchmark.StartupBenchmarkTest`.
+- `androidx.baselineprofile` plugin wired into `:app` (adds `generateBaselineProfile` / `generateReleaseBaselineProfile` / `copyReleaseBaselineProfileIntoSrc` tasks).
+- `.github/workflows/screengrab.yml` — dedicated emulator workflow that runs `bundle exec fastlane screengrab` and commits Play Store screenshots for `en-US`/`de-DE`.
+- `fastlane/Fastfile` with `:metadata`, `:screengrab`, `:release` lanes; `fastlane/Appfile` pinning `com.fra.autoplay`.
+
+### Improved
+- AGP 8.2.0 → 8.5.1 (bundles JaCoCo 0.8.11, JDK 21 compatible), Kotlin 1.9.20 → 1.9.24, Gradle 8.5 → 8.10.1.
+- `renovate.json` expanded: `config:recommended` + weekly schedule, grouped AGP/Kotlin/Gradle bumps, benchmark & paparazzi pinned (manual upgrade).
+- `benchmark/README.md` documents the generator API and regeneration steps.
+
 ## v1.6.0 (2026-10-08)
 
 ### Added
-- `:benchmark` module with `BaselineProfileGenerator` (`androidx.benchmark:benchmark-macro-junit4:1.2.3`, `androidx.baselineprofile` plugin). Generator uses `MacrobenchmarkScope` (`pressHome()`, `startActivityAndWait()`, `device.waitForIdle()`) — run `./gradlew :benchmark:generateBaselineProfile` on a rooted device/emulator.
+- `:benchmark` module with `BaselineProfileGenerator` (`androidx.benchmark:benchmark-macro-junit4:1.2.3`). Generator uses `MacrobenchmarkScope` (`pressHome()`, `startActivityAndWait()`, `device.waitForIdle()`) — run `./gradlew :benchmark:generateBaselineProfile` on a rooted device/emulator.
 - Dedicated `lint` CI job (runs before `build-and-test`, uploads `lint-results-debug.html` artifact).
 - `recordPaparazziDebug` step in CI so screenshot diffs are caught on PRs.
 
 ### Improved
-- `renovate.json` expanded: `config:recommended` + weekly schedule, grouped AGP/Kotlin/Gradle bumps, benchmark & paparazzi pinned (manual upgrade).
-- `benchmark/README.md` documents the generator API and regeneration steps.
 - Coverage badge generation moved behind a `lint` → `build-and-test` pipeline.
 
 ## v1.5.0 (2026-10-08)

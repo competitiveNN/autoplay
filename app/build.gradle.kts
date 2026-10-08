@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.paparazzi)
+    alias(libs.plugins.baselineprofile)
     id("org.gradle.jacoco")
 }
 
@@ -16,8 +17,8 @@ android {
         applicationId = "com.fra.autoplay"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.6.0"
+        versionCode = 8
+        versionName = "1.7.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
