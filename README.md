@@ -13,6 +13,14 @@ AutoPlay is an Android app that automatically resumes media playback when headph
 - Resumes stopped media playback through `MediaSessionManager`
 - Fallback to media-button injection when permission denied
 - Restarts automatically after device boot
+- **Settings** with preferences for:
+  - Resume delay (0-3000ms)
+  - Headphone type filter
+  - Battery optimization reminder
+  - App exclusion list (exclude specific apps from auto-resume)
+- **Home screen widget** for quick ON/OFF toggle
+- **Persistent notification** with Test Resume and Stop actions
+- **Periodic battery optimization checks** via WorkManager (every 4 hours)
 
 ## Requirements
 
@@ -37,18 +45,36 @@ app/
 ├── src/main/
 │   ├── AndroidManifest.xml
 │   ├── java/com/fra/autoplay/
-│   │   ├── MainActivity.kt              # Toggle UI
-│   │   ├── MediaPlaybackService.kt      # Foreground service + headphone detection
-│   │   ├── HeadphoneReceiver.kt         # ACTION_HEADSET_PLUG broadcast receiver
-│   │   └── BootReceiver.kt              # Boot completed receiver
+│   │   ├── MainActivity.kt                 # Toggle UI
+│   │   ├── MediaPlaybackService.kt         # Foreground service + headphone detection
+│   │   ├── HeadphoneReceiver.kt            # ACTION_HEADSET_PLUG broadcast receiver
+│   │   ├── BootReceiver.kt                 # Boot completed receiver
+│   │   ├── SettingsActivity.kt             # Settings screen
+│   │   ├── SettingsFragment.kt             # Preferences fragment
+│   │   ├── PreferencesHelper.kt            # SharedPreferences wrapper
+│   │   ├── BatteryOptimizationWorker.kt    # WorkManager worker for battery checks
+│   │   ├── AutoPlayWidgetProvider.kt       # Home screen widget
+│   │   └── AutoPlayApplication.kt          # Application class for WorkManager init
 │   ├── res/
-│   │   ├── layout/activity_main.xml
+│   │   ├── layout/
+│   │   │   ├── activity_main.xml
+│   │   │   ├── activity_settings.xml
+│   │   │   ├── fragment_settings.xml
+│   │   │   ├── dialog_delay.xml
+│   │   │   └── widget_autoplay.xml
 │   │   ├── values/strings.xml
+│   │   ├── xml/
+│   │   │   ├── settings_preferences.xml
+│   │   │   └── widget_autoplay_info.xml
 │   │   └── drawable/ic_launcher_foreground.xml
-│   └── test/java/com/fra/autoplay/      # Unit tests
-│       ├── MediaPlaybackServiceTest.kt
-│       ├── HeadphoneReceiverTest.kt
-│       └── BootReceiverTest.kt
+│   ├── test/java/com/fra/autoplay/         # Unit tests (Robolectric)
+│   │   ├── MediaPlaybackServiceTest.kt
+│   │   ├── HeadphoneReceiverTest.kt
+│   │   └── BootReceiverTest.kt
+│   └── androidTest/java/com/fra/autoplay/  # Integration tests (Espresso)
+│       ├── MainActivityTest.kt
+│       ├── SettingsActivityTest.kt
+│       └── PreferencesHelperIntegrationTest.kt
 ```
 
 ## Building

@@ -6,8 +6,15 @@
     <string name="notification_text">Listening for headphone connection…</string>
     <string name="notification_battery_warning">Battery optimization is enabled — disable it for reliable background operation</string>
     <string name="notification_stop">Stop Service</string>
+    <string name="notification_test_resume">Test Resume</string>
     <string name="status_on">Service running — media will auto-resume</string>
     <string name="status_off">Service stopped — toggle to enable</string>
+
+    <!-- Widget strings -->
+    <string name="widget_status_on">AutoPlay: ON</string>
+    <string name="widget_status_off">AutoPlay: OFF</string>
+    <string name="widget_toggle_on">Enable</string>
+    <string name="widget_toggle_off">Disable</string>
     <string name="battery_warning">Disable battery optimization for reliable background operation</string>
     <string name="battery_hint">Tip: disable battery optimization for reliable background operation</string>
     <string name="service_started">AutoPlay service started</string>
@@ -25,6 +32,7 @@
     <string name="settings_filter_headphones_summary">Only resume for selected headphone types (otherwise all types)</string>
     <string name="settings_battery_reminder_title">Battery Optimization Reminder</string>
     <string name="settings_battery_reminder_summary">Show warning if battery optimization is enabled for this app</string>
+    <string name="settings_exclude_apps_title">Exclude Apps from Auto-Resume</string>
     <string name="settings_version">Version</string>
     <string name="settings_version_summary">1.0.1</string>
     <string name="settings_test_resume">Test Resume</string>

@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.1.0 (2026-10-08)
+
+### Added
+- **Integration tests** for SettingsActivity and PreferencesHelper using Espresso
+- **WorkManager-based periodic battery optimization health checks** (every 4 hours)
+  - Shows notification when battery optimization is enabled for the app
+  - Respects user preference to enable/disable reminders
+- **"Test Resume" action** in persistent notification for quick testing
+- **App exclusion list** preference to exclude specific apps from auto-resume
+- **Home screen widget** for quick ON/OFF toggle without opening the app
+  - Shows current service status
+  - Tap to toggle service on/off
+  - Tap icon to open app
+
+### Improved
+- Updated MediaPlaybackService to respect app exclusion list
+- Widget updates automatically when service state changes
+- Added broadcast for service state changes to keep UI in sync
+
 ## v1.0.1 (2026-10-07)
 
 ### Bug Fixes

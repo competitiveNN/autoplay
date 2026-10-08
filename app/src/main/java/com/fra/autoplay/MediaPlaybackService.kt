@@ -32,9 +32,10 @@ class MediaPlaybackService : Service() {
 
     companion object {
         private const val CHANNEL_ID = "autoplay_channel"
-        private const val ACTION_STOP = "com.fra.autoplay.action.STOP"
+        const val ACTION_STOP = "com.fra.autoplay.action.STOP"
         private const val NOTIFICATION_ID = 1
         private var running = false
+        const val ACTION_SERVICE_STATE_CHANGED = "com.fra.autoplay.action.SERVICE_STATE_CHANGED"
 
         fun isRunning(): Boolean = running
 
@@ -105,6 +106,14 @@ class MediaPlaybackService : Service() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == PreferencesHelper.ACTION_PREFERENCES_CHANGED) {
                     resumeDelayMs = PreferencesHelper.getResumeDelayMs(context)
+                    // Update battery optimization state in notification
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                        batteryOptimizationEnabled = !pm.isIgnoringBatteryOptimizations(context.packageName)
+                    }
+                    // Update notification with new battery state
+                    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.notify(NOTIFICATION_ID, buildNotification())
                 }
             }
         }
@@ -126,6 +135,7 @@ class MediaPlaybackService : Service() {
 
         startForeground(NOTIFICATION_ID, buildNotification())
         running = true
+        sendBroadcast(Intent(ACTION_SERVICE_STATE_CHANGED))
 
         // Guard against double-registration on sticky restarts.
         if (!audioCallbackRegistered) {
@@ -149,6 +159,7 @@ class MediaPlaybackService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         running = false
+        sendBroadcast(Intent(ACTION_SERVICE_STATE_CHANGED))
         delayHandler.removeCallbacksAndMessages(null)
         if (audioCallbackRegistered) {
             audioManager.unregisterAudioDeviceCallback(audioDeviceCallback)
@@ -185,8 +196,10 @@ class MediaPlaybackService : Service() {
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
             // Prioritize sessions that support transport controls and are closer to playing.
+            @Suppress("ALWAYS_TRUE_OR_FALSE")
             val candidates = sessions
                 .filter { it.transportControls != null }
+                .filter { !PreferencesHelper.isPackageExcluded(this, it.packageName) }
                 .sortedByDescending { it.playbackState?.lastPositionUpdateTime ?: 0L }
 
             for (controller in candidates) {
@@ -239,6 +252,11 @@ class MediaPlaybackService : Service() {
             Intent(this, MediaPlaybackService::class.java).apply { action = ACTION_STOP },
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
+        val testResumePendingIntent = PendingIntent.getService(
+            this, 1,
+            Intent(this, MediaPlaybackService::class.java).apply { action = "com.fra.autoplay.action.TEST_RESUME" },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(
@@ -253,6 +271,11 @@ class MediaPlaybackService : Service() {
                 R.drawable.ic_stop_24,
                 getString(R.string.notification_stop),
                 stopPendingIntent
+            )
+            .addAction(
+                android.R.drawable.ic_media_play,
+                getString(R.string.notification_test_resume),
+                testResumePendingIntent
             )
             .build()
     }

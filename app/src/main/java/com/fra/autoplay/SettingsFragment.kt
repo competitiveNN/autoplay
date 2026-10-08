@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
@@ -18,6 +19,8 @@ class SettingsFragment : Fragment() {
     private lateinit var batterySwitch: Switch
     private lateinit var delayValueText: TextView
     private lateinit var filterValueText: TextView
+    private lateinit var excludedAppsButton: Button
+    private lateinit var excludedAppsValueText: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +38,8 @@ class SettingsFragment : Fragment() {
         batterySwitch = view.findViewById(R.id.battery_switch)
         delayValueText = view.findViewById(R.id.delay_value_text)
         filterValueText = view.findViewById(R.id.filter_value_text)
+        excludedAppsButton = view.findViewById(R.id.excluded_apps_button)
+        excludedAppsValueText = view.findViewById(R.id.excluded_apps_value_text)
 
         val delayMs = PreferencesHelper.getResumeDelayMs(requireContext())
         delayValueText.text = formatDelay(delayMs)
@@ -42,6 +47,7 @@ class SettingsFragment : Fragment() {
         filterSwitch.isChecked = PreferencesHelper.isFilterHeadphones(requireContext())
         batterySwitch.isChecked = PreferencesHelper.isBatteryReminderEnabled(requireContext())
         filterValueText.text = if (filterSwitch.isChecked) "Filtered" else "All types"
+        updateExcludedAppsText()
 
         delaySwitch.setOnCheckedChangeListener { _, checked ->
             if (checked) {
@@ -61,6 +67,10 @@ class SettingsFragment : Fragment() {
 
         batterySwitch.setOnCheckedChangeListener { _, checked ->
             PreferencesHelper.setBatteryReminder(requireContext(), checked)
+        }
+
+        excludedAppsButton.setOnClickListener {
+            showExcludedAppsDialog()
         }
     }
 
@@ -87,6 +97,43 @@ class SettingsFragment : Fragment() {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private fun showExcludedAppsDialog() {
+        val excludedPackages = PreferencesHelper.getExcludedPackages(requireContext()).toMutableList()
+        val allPackages = requireContext().packageManager
+            .getInstalledApplications(0)
+            .filter { it.packageName != requireContext().packageName }
+            .sortedBy { it.packageName }
+            .map { it.packageName }
+
+        val checkedItems = allPackages.map { excludedPackages.contains(it) }.toBooleanArray()
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_exclude_apps_title)
+            .setMultiChoiceItems(allPackages.toTypedArray(), checkedItems) { _, which, isChecked ->
+                val pkg = allPackages[which]
+                if (isChecked) {
+                    PreferencesHelper.addExcludedPackage(requireContext(), pkg)
+                } else {
+                    PreferencesHelper.removeExcludedPackage(requireContext(), pkg)
+                }
+            }
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                updateExcludedAppsText()
+                PreferencesHelper.notifyPreferencesChanged(requireContext())
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun updateExcludedAppsText() {
+        val excluded = PreferencesHelper.getExcludedPackages(requireContext())
+        excludedAppsValueText.text = if (excluded.isEmpty()) {
+            "None"
+        } else {
+            "${excluded.size} app(s) excluded"
+        }
     }
 
     private fun formatDelay(ms: Long): String {

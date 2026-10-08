@@ -39,6 +39,19 @@
         android:text="@string/settings_battery_reminder_title" />
 
     <Button
+        android:id="@+id/excluded_apps_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_exclude_apps_title" />
+
+    <TextView
+        android:id="@+id/excluded_apps_value_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="None"
+        android:textColor="?android:attr/textColorSecondary" />
+
+    <Button
         android:id="@+id/test_resume_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
