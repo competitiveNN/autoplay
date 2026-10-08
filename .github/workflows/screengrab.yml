@@ -48,6 +48,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           avd-name: screengrab
+          sd-card-size: 2048M
           disk-size: 4096M
           emulator-boot-timeout: 900
           script: ./gradlew assembleDebug assembleDebugAndroidTest && bundle exec fastlane screenshots
