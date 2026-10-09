@@ -50,7 +50,23 @@ jobs:
           avd-name: screengrab
           disk-size: 4096M
           emulator-boot-timeout: 900
-          script: ./gradlew assembleDebug assembleDebugAndroidTest && i=0; while [ $i -lt 60 ]; do if adb -s emulator-5554 shell pm list packages >/dev/null 2>&1; then echo "Package manager ready"; break; fi; sleep 5; i=$((i + 1)); done && bundle exec fastlane screenshots
+          script: |
+            ./gradlew assembleDebug assembleDebugAndroidTest
+            i=0; while [ $i -lt 60 ]; do if adb -s emulator-5554 shell pm list packages >/dev/null 2>&1; then echo "Package manager ready"; break; fi; sleep 5; i=$((i + 1)); done
+            # `adb install` on the macOS emulator runner intermittently fails with
+            # "Failure calling service package: Broken pipe (32)". Recycling the
+            # server and retrying the lane usually clears it.
+            adb kill-server
+            adb start-server
+            adb wait-for-device
+            sleep 10
+            n=0
+            until bundle exec fastlane screenshots; do
+              n=$((n + 1))
+              if [ $n -ge 3 ]; then echo "fastlane screenshots failed after $n attempts"; exit 1; fi
+              echo "fastlane screenshots failed (attempt $n), retrying in 15s..."
+              sleep 15
+            done
 
       - name: Commit screenshots
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
