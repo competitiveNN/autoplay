@@ -60,13 +60,7 @@ jobs:
             adb start-server
             adb wait-for-device
             sleep 10
-            n=0
-            until bundle exec fastlane screenshots; do
-              n=$((n + 1))
-              if [ $n -ge 3 ]; then echo "fastlane screenshots failed after $n attempts"; exit 1; fi
-              echo "fastlane screenshots failed (attempt $n), retrying in 15s..."
-              sleep 15
-            done
+            n=0; until bundle exec fastlane screenshots; do n=$((n+1)); if [ $n -ge 3 ]; then echo "fastlane screenshots failed after $n attempts"; exit 1; fi; echo "fastlane screenshots failed (attempt $n), retrying in 15s..."; sleep 15; done
 
       - name: Commit screenshots
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
