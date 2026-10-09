@@ -9,6 +9,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import tools.fastlane.screengrab.DecorViewScreenshotStrategy
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.locale.LocaleTestRule
 
@@ -30,7 +31,9 @@ class ScreengrabTest {
     fun captureSettingsScreen() {
         val intent = Intent(ApplicationProvider.getApplicationContext<Context>(), SettingsActivity::class.java)
         val scenario = ActivityScenario.launch<SettingsActivity>(intent)
-        Screengrab.screenshot("settings_screen")
+        scenario.onActivity { activity ->
+            Screengrab.screenshot("settings_screen", DecorViewScreenshotStrategy(activity))
+        }
         scenario.close()
     }
 }
