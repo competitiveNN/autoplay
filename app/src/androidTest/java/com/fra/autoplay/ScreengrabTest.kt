@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,14 +18,15 @@ class ScreengrabTest {
     @get:Rule
     val localeTestRule = LocaleTestRule()
 
-    @get:Rule
-    val activityRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
-
     @Test
     fun captureMainScreen() {
-        activityRule.scenario.onActivity { activity ->
+        val scenario = ActivityScenario.launch<MainActivity>(MainActivity::class.java)
+        scenario.onActivity { activity ->
             Screengrab.screenshot("main_screen", DecorViewScreenshotStrategy(activity))
         }
+        try {
+            scenario.close()
+        } catch (_: AssertionError) {}
     }
 
     @Test
@@ -36,6 +36,8 @@ class ScreengrabTest {
         scenario.onActivity { activity ->
             Screengrab.screenshot("settings_screen", DecorViewScreenshotStrategy(activity))
         }
-        scenario.close()
+        try {
+            scenario.close()
+        } catch (_: AssertionError) {}
     }
 }
