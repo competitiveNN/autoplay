@@ -16,6 +16,11 @@ class AutoPlayApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // Instrumentation (and direct boot) can create the Application before
+        // the user is unlocked, when credential-encrypted SharedPreferences
+        // are unavailable. Defer prefs-dependent init until unlock.
+        val userManager = getSystemService(android.os.UserManager::class.java)
+        if (userManager != null && !userManager.isUserUnlocked) return
         PreferencesHelper.migrateIfNeeded(this)
         initCrashlyticsIfOptedIn()
         initDiagnosticsIfOptedIn()
