@@ -9,6 +9,8 @@ jobs:
   screengrab:
     runs-on: macos-15-intel
     timeout-minutes: 50
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
