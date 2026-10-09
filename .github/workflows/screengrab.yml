@@ -8,7 +8,7 @@ on:
 jobs:
   screengrab:
     runs-on: macos-15-intel
-    timeout-minutes: 35
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +60,10 @@ jobs:
             adb start-server
             adb wait-for-device
             sleep 10
-            n=0; until bundle exec fastlane screenshots; do n=$((n+1)); if [ $n -ge 3 ]; then echo "fastlane screenshots failed after $n attempts"; exit 1; fi; echo "fastlane screenshots failed (attempt $n), retrying in 15s..."; sleep 15; done
+            # Bound each fastlane attempt so a hang cannot eat the whole job.
+            # Keep the logcat PID and the retry loop on one line: the runner
+            # executes every line as a separate /bin/sh -c process.
+            adb -s emulator-5554 logcat -v time > logcat.txt 2>&1 & LP=$!; n=0; until perl -e 'alarm 600; exec @ARGV' bundle exec fastlane screenshots; do n=$((n+1)); if [ $n -ge 3 ]; then echo "fastlane screenshots failed after $n attempts"; kill $LP 2>/dev/null; exit 1; fi; echo "fastlane screenshots failed (attempt $n), retrying in 15s..."; sleep 15; done; kill $LP 2>/dev/null
 
       - name: Commit screenshots
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
@@ -70,6 +73,13 @@ jobs:
           git add fastlane/metadata/android/**/*.png
           git commit -m "Update Play Store screenshots [skip ci]" || echo "No screenshot changes"
           git push
+
+      - name: Upload logcat
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: emulator-logcat
+          path: logcat.txt
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v4

@@ -1,0 +1,19 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+         Screengrab requirements (https://docs.fastlane.tools/actions/screengrab/):
+         CHANGE_CONFIGURATION lets the test runner switch the device locale per
+         test, DUMP enables SystemUI demo mode for a clean status bar, and
+         WRITE_EXTERNAL_STORAGE is only used on API <= 18.
+    -->
+    <uses-permission
+        android:name="android.permission.CHANGE_CONFIGURATION"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.DUMP"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+</manifest>

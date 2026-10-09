@@ -24,7 +24,9 @@ class ScreengrabTest {
 
     @Test
     fun captureMainScreen() {
-        Screengrab.screenshot("main_screen")
+        activityRule.scenario.onActivity { activity ->
+            Screengrab.screenshot("main_screen", DecorViewScreenshotStrategy(activity))
+        }
     }
 
     @Test
