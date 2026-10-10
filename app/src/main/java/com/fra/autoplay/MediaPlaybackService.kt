@@ -129,8 +129,8 @@ class MediaPlaybackService : Service() {
             return START_NOT_STICKY
         }
 
-        // Handle test resume action (also used by HeadphoneConnectionReceiver
-        // to trigger resume when the service is already running).
+        // Handle test resume action (also used by the notification Test Resume button
+        // and by external callers to trigger resume when the service is running).
         if (intent?.action == "com.fra.autoplay.action.TEST_RESUME") {
             triggerResume()
             return START_STICKY

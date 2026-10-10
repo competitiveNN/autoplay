@@ -86,8 +86,6 @@
             </intent-filter>
         </receiver>
 
-        
-
         <receiver
             android:name=".AutoPlayWidgetProvider"
             android:enabled="true"

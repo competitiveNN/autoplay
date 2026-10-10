@@ -16,9 +16,7 @@ AutoPlay is an Android app that automatically resumes media playback when headph
 
 - Runs in the background as a persistent foreground service (never killed)
 - Single ON/OFF toggle button in the UI
-- Detects headphone connection via:
-  - `AudioDeviceCallback` (API 23+, modern path)
-  - `ACTION_HEADSET_PLUG` broadcast (fallback)
+- Detects headphone connection via `AudioDeviceCallback` (API 23+)
   - Supports wired, Bluetooth (A2DP/LE), USB, digital, and hearing aid headphones
 - Resumes stopped media playback through `MediaSessionManager`
 - Fallback to media-button injection when permission denied
@@ -67,7 +65,6 @@ app/
 │   ├── java/com/fra/autoplay/
 │   │   ├── MainActivity.kt                 # Toggle UI
 │   │   ├── MediaPlaybackService.kt         # Foreground service + headphone detection
-│   │   ├── HeadphoneReceiver.kt            # ACTION_HEADSET_PLUG broadcast receiver
 │   │   ├── BootReceiver.kt                 # Boot completed receiver
 │   │   ├── QuickSettingsTileService.kt     # QS tile (TileService)
 │   │   ├── SettingsActivity.kt             # Settings screen
@@ -93,7 +90,6 @@ app/
 │   │   └── drawable/ic_launcher*.xml
 │   ├── test/java/com/fra/autoplay/         # Unit tests (Robolectric)
 │   │   ├── MediaPlaybackServiceTest.kt
-│   │   ├── HeadphoneReceiverTest.kt
 │   │   ├── BootReceiverTest.kt
 │   │   ├── PreferencesHelperTest.kt
 │   │   └── QuickSettingsTileServiceTest.kt
@@ -134,7 +130,6 @@ Tests cover:
 - `MediaPlaybackService.isHeadphone()` for all headphone device types
 - `PreferencesHelper` JSON export/import, migration, schema versioning
 - `QuickSettingsTileService` state mapping
-- `HeadphoneReceiver` ignoring non-headset and unplug events
 - `BootReceiver` ignoring non-boot events
 - Paparazzi screenshots of `activity_main`, `fragment_settings`, `activity_about`, `widget_autoplay`
 - Paparazzi screenshots of Compose `AutoPlaySettingsScreen`, `SwitchSettingItem`, `ButtonSettingItem`, `DropdownSettingItem`
