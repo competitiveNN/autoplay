@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4 (2026-10-10)
+
+### Fixed
+- **Media resume now actually works** — `MediaSessionManager.getActiveSessions()` silently returns an empty list for third-party apps (it requires the privileged `MANAGE_MEDIA_SESSIONS` permission), so the session-based resume path could never fire. The service now always injects a media-button event as the reliable fallback, and `android.permission.MANAGE_MEDIA_SESSIONS` is declared so the session path is available too.
+- **Headphone filter logic** — `isHeadphoneAllowed` incorrectly allowed all headphone types when the filter was enabled; it now permits only wired + USB headsets.
+- **Test suite** — `MediaPlaybackServiceTest` (added in a prior commit) never compiled and its reflection-based helpers were broken; rewritten to use the real public API and a properly constructed `AudioDeviceInfo`.
+
 ## v0.2 (2026-10-10)
 
 ### Fixed
