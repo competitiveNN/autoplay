@@ -6,28 +6,20 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import android.media.session.MediaController
-import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
-import android.provider.Settings
-import android.os.IBinder
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.getSystemService
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 
 class MediaPlaybackService : Service() {
 
@@ -73,10 +65,9 @@ class MediaPlaybackService : Service() {
 
     private lateinit var audioManager: AudioManager
     private lateinit var mediaSessionManager: MediaSessionManager
-    private var headphoneReceiver: HeadphoneConnectionReceiver? = null
     private var batteryOptimizationEnabled = false
     private var audioCallbackRegistered = false
-    private var prefsReceiver: BroadcastReceiver? = null
+    private var prefsReceiver: android.content.BroadcastReceiver? = null
     private val delayHandler = Handler(Looper.getMainLooper())
     private var resumeDelayMs: Long = 0
 
@@ -106,7 +97,7 @@ class MediaPlaybackService : Service() {
             batteryOptimizationEnabled = !pm.isIgnoringBatteryOptimizations(packageName)
         }
         // Listen for preference changes
-        prefsReceiver = object : BroadcastReceiver() {
+prefsReceiver = object : android.content.BroadcastReceiver() {
             @android.annotation.SuppressLint("MissingPermission")
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == PreferencesHelper.ACTION_PREFERENCES_CHANGED) {
@@ -158,13 +149,6 @@ class MediaPlaybackService : Service() {
             audioCallbackRegistered = true
         }
 
-        // Register sticky broadcast receiver for headset events as fallback.
-        // New instance each time to avoid "receiver already registered" errors.
-        if (headphoneReceiver == null) {
-            headphoneReceiver = HeadphoneConnectionReceiver()
-            registerReceiver(headphoneReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
-        }
-
         // Check current audio devices for already-connected headphones.
         checkCurrentDevices()
 
@@ -183,10 +167,6 @@ class MediaPlaybackService : Service() {
         prefsReceiver?.let {
             try { unregisterReceiver(it) } catch (_: Exception) { /* ignore */ }
             prefsReceiver = null
-        }
-        headphoneReceiver?.let {
-            try { unregisterReceiver(it) } catch (_: Exception) { /* ignore */ }
-            headphoneReceiver = null
         }
     }
 
