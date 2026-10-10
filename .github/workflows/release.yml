@@ -41,17 +41,14 @@ jobs:
           if [ -n "${KEYSTORE_BASE64}" ]; then
             echo "${KEYSTORE_BASE64}" | base64 -d > app/release.keystore
           else
-            # No secret provided: generate a throwaway keystore so the build can sign.
-            keytool -genkey -v -keystore app/release.keystore \
-              -alias "${KEY_ALIAS:-autoplay}" -keyalg RSA -keysize 2048 -validity 10000 \
-              -storepass "${KEYSTORE_PASSWORD:-autoplay}" \
-              -keypass "${KEYSTORE_PASSWORD:-autoplay}" \
-              -dname "CN=AutoPlay, OU=AutoPlay, O=AutoPlay, L=Unknown, ST=Unknown, C=US"
+            # No secret provided: build debug first to create the debug keystore,
+            # then copy it for release signing.
+            ./gradlew assembleDebug --no-daemon
+            mkdir -p app/
+            cp ~/.android/debug.keystore app/release.keystore
           fi
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
       - name: Validate fastlane metadata
         run: |
