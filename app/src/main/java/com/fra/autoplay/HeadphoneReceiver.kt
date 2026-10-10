@@ -17,13 +17,25 @@ class HeadphoneConnectionReceiver : BroadcastReceiver() {
         if (intent.action != Intent.ACTION_HEADSET_PLUG) return
 
         val state = intent.getIntExtra("state", -1)
-        if (state == 1) {
-            val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            val devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-            if (devices.any { MediaPlaybackService.isHeadphoneAllowed(context, it) }) {
-                Log.d(TAG, "Headphones connected, ensuring autoplay service is running")
-                ensureServiceRunning(context)
+        if (state != 1) return
+
+        val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+        if (!devices.any { MediaPlaybackService.isHeadphoneAllowed(context, it) }) return
+
+        if (MediaPlaybackService.isRunning()) {
+            // Service already active — trigger resume directly via the
+            // TEST_RESUME action, which the service handles in onStartCommand.
+            Log.d(TAG, "Headphones plugged while service running; triggering resume")
+            val resumeIntent = Intent(context, MediaPlaybackService::class.java).apply {
+                action = "com.fra.autoplay.action.TEST_RESUME"
             }
+            context.startService(resumeIntent)
+        } else {
+            // Service not running — start it so it can register its audio
+            // device callback and handle the next plug event.
+            Log.d(TAG, "Headphones plugged while service stopped; starting service")
+            ensureServiceRunning(context)
         }
     }
 
@@ -38,11 +50,6 @@ class HeadphoneConnectionReceiver : BroadcastReceiver() {
      * gracefully.
      */
     private fun ensureServiceRunning(context: Context) {
-        if (MediaPlaybackService.isRunning()) {
-            // Service already active; its own resume logic (audio device callback /
-            // headset receiver) handles media resume.
-            return
-        }
         val intent = Intent(context, MediaPlaybackService::class.java)
         try {
             ContextCompat.startForegroundService(context, intent)

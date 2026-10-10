@@ -134,9 +134,10 @@ class MediaPlaybackService : Service() {
             return START_NOT_STICKY
         }
 
-        // Handle test resume action
+        // Handle test resume action (also used by HeadphoneConnectionReceiver
+        // to trigger resume when the service is already running).
         if (intent?.action == "com.fra.autoplay.action.TEST_RESUME") {
-            resumeMediaIfStopped()
+            triggerResume()
             return START_STICKY
         }
 
@@ -198,7 +199,7 @@ class MediaPlaybackService : Service() {
         }
     }
 
-    internal fun triggerResume() {
+    fun triggerResume() {
         val context = this
         val delay = if (PreferencesHelper.isSmartResumeEnabled(context)) {
             PreferencesHelper.getSmartDelaySuggestion(context)
@@ -213,7 +214,7 @@ class MediaPlaybackService : Service() {
         }
     }
 
-    internal fun resumeMediaIfStopped() {
+    fun resumeMediaIfStopped() {
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
             // Prioritize sessions that support transport controls and are closer to playing.
