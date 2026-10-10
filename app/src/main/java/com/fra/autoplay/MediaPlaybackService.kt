@@ -17,6 +17,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.os.SystemClock
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.getSystemService
@@ -24,6 +25,7 @@ import androidx.core.content.getSystemService
 class MediaPlaybackService : Service() {
 
     companion object {
+        private const val TAG = "MediaPlaybackService"
         private const val CHANNEL_ID = "autoplay_channel"
         const val ACTION_STOP = "com.fra.autoplay.action.STOP"
         private const val NOTIFICATION_ID = 1
@@ -74,7 +76,9 @@ class MediaPlaybackService : Service() {
     private val audioDeviceCallback = object : AudioDeviceCallback() {
         override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
             super.onAudioDevicesAdded(addedDevices)
-            if (addedDevices.any { isHeadphoneAllowed(this@MediaPlaybackService, it) }) {
+            val headphones = addedDevices.filter { isHeadphoneAllowed(this@MediaPlaybackService, it) }
+            if (headphones.isNotEmpty()) {
+                Log.d(TAG, "onAudioDevicesAdded: ${headphones.map { it.type }}")
                 triggerResume()
             }
         }
@@ -97,7 +101,7 @@ class MediaPlaybackService : Service() {
             batteryOptimizationEnabled = !pm.isIgnoringBatteryOptimizations(packageName)
         }
         // Listen for preference changes
-prefsReceiver = object : android.content.BroadcastReceiver() {
+        prefsReceiver = object : android.content.BroadcastReceiver() {
             @android.annotation.SuppressLint("MissingPermission")
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == PreferencesHelper.ACTION_PREFERENCES_CHANGED) {
@@ -174,8 +178,12 @@ prefsReceiver = object : android.content.BroadcastReceiver() {
 
     private fun checkCurrentDevices() {
         val devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-        if (devices.any { isHeadphoneAllowed(this, it) }) {
+        val headphones = devices.filter { isHeadphoneAllowed(this, it) }
+        if (headphones.isNotEmpty()) {
+            Log.d(TAG, "checkCurrentDevices: headphones present ${headphones.map { it.type }}")
             triggerResume()
+        } else {
+            Log.d(TAG, "checkCurrentDevices: no headphones detected")
         }
     }
 
@@ -186,7 +194,8 @@ prefsReceiver = object : android.content.BroadcastReceiver() {
         } else {
             resumeDelayMs
         }
-        
+        Log.d(TAG, "triggerResume: delay=${delay}ms smart=${PreferencesHelper.isSmartResumeEnabled(context)}")
+
         if (delay > 0) {
             delayHandler.postDelayed({ resumeMediaIfStopped() }, delay)
         } else {
@@ -197,6 +206,7 @@ prefsReceiver = object : android.content.BroadcastReceiver() {
     fun resumeMediaIfStopped() {
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
+            Log.d(TAG, "resumeMediaIfStopped: ${sessions.size} active session(s)")
             // Prioritize sessions that support transport controls and are closer to playing.
             @Suppress("ALWAYS_TRUE_OR_FALSE")
             val candidates = sessions
@@ -204,19 +214,26 @@ prefsReceiver = object : android.content.BroadcastReceiver() {
                 .filter { !PreferencesHelper.isPackageExcluded(this, it.packageName) }
                 .sortedByDescending { it.playbackState?.lastPositionUpdateTime ?: 0L }
 
+            var resumed = false
             for (controller in candidates) {
-                val state = controller.playbackState?.state ?: continue
+                val state = controller.playbackState?.state
+                Log.d(TAG, "  candidate=${controller.packageName} state=$state")
                 // "not playing" -> resume. Handles both STOPPED and PAUSED states.
                 if (state == android.media.session.PlaybackState.STATE_STOPPED ||
                     state == android.media.session.PlaybackState.STATE_PAUSED
                 ) {
                     controller.transportControls.play()
+                    resumed = true
                     // Only resume the most relevant session to avoid conflicts.
                     break
                 }
             }
+            if (!resumed) {
+                Log.d(TAG, "resumeMediaIfStopped: no session eligible for resume")
+            }
         } catch (_: SecurityException) {
             // Permission not granted; try fallback via media button injection.
+            Log.w(TAG, "resumeMediaIfStopped: MediaSessionManager access denied; falling back to media button")
             sendMediaButtonClick()
         }
     }

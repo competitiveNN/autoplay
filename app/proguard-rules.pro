@@ -2,7 +2,6 @@
 # Keep app entry points referenced from AndroidManifest / system
 -keep class com.fra.autoplay.MediaPlaybackService { *; }
 -keep class com.fra.autoplay.BootReceiver { *; }
--keep class com.fra.autoplay.HeadphoneConnectionReceiver { *; }
 -keep class com.fra.autoplay.QuickSettingsTileService { *; }
 -keep class com.fra.autoplay.AutoPlayWidgetProvider { *; }
 -keep class com.fra.autoplay.BatteryOptimizationWorker { *; }
