@@ -24,6 +24,7 @@ import android.provider.Settings
 import android.os.IBinder
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -139,7 +140,7 @@ class MediaPlaybackService : Service() {
             return START_STICKY
         }
 
-        androidx.core.app.ServiceCompat.startForeground(
+        ServiceCompat.startForeground(
             this, NOTIFICATION_ID, buildNotification(),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
