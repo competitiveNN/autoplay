@@ -24,16 +24,6 @@ android {
         multiDexEnabled = true
     }
 
-    signingConfigs {
-        val releaseKeystore = file("release.keystore")
-        create("release").apply {
-            storeFile = if (releaseKeystore.exists()) releaseKeystore else signingConfigs.getByName("debug").storeFile
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "autoplay"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "autoplay"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "autoplay"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -42,7 +32,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isTestCoverageEnabled = true
