@@ -203,6 +203,13 @@ class MediaPlaybackService : Service() {
     }
 
     fun resumeMediaIfStopped() {
+        // The most reliable cross-app mechanism is injecting a media-button
+        // event: the active app handles KEYCODE_MEDIA_PLAY/Pause and resumes
+        // playback when it is stopped or paused. The MediaSessionManager path
+        // is kept as an enhancement for apps that expose active sessions, but
+        // it silently returns an empty list for third-party apps (it requires
+        // the privileged MANAGE_MEDIA_SESSIONS permission), so it must never
+        // be the only path.
         try {
             val sessions = mediaSessionManager.getActiveSessions(null)
             Log.d(TAG, "resumeMediaIfStopped: ${sessions.size} active session(s)")
@@ -228,13 +235,16 @@ class MediaPlaybackService : Service() {
                 }
             }
             if (!resumed) {
-                Log.d(TAG, "resumeMediaIfStopped: no session eligible for resume")
+                Log.d(TAG, "resumeMediaIfStopped: no session eligible for resume; falling back to media button")
             }
         } catch (_: SecurityException) {
-            // Permission not granted; try fallback via media button injection.
+            // Permission not granted; fall back to media button injection.
             Log.w(TAG, "resumeMediaIfStopped: MediaSessionManager access denied; falling back to media button")
-            sendMediaButtonClick()
+        } catch (_: Exception) {
+            Log.w(TAG, "resumeMediaIfStopped: MediaSessionManager access failed; falling back to media button")
         }
+        // Always inject a media-button event as the reliable fallback path.
+        sendMediaButtonClick()
     }
 
     @Suppress("DEPRECATION")
