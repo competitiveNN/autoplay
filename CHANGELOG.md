@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.2.1 (2026-10-10)
+
+### Fixed
+- **Headphone receiver now starts service on plug** — `HeadphoneConnectionReceiver` no longer no-ops when the service isn't already running. Plugging in headphones now reliably starts `MediaPlaybackService` from a cold state.
+- **Android 12+ background FGS start restriction** — `HeadphoneConnectionReceiver` catches `ForegroundServiceStartNotAllowedException` gracefully instead of crashing.
+- **Audio device type API-level guards** — `TYPE_BLE_HEADSET` and `TYPE_HEARING_AID` (API 31+) referenced safely on API 26-30 via compile-time constant inlining.
+- **`ServiceCompat.startForeground()`** — service now uses `ServiceCompat` with `FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` on API 29+ for proper API 26+ compatibility.
+
 ## v2.2.0 (2026-10-08)
 
 ### Added

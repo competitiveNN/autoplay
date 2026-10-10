@@ -40,17 +40,20 @@ class MediaPlaybackService : Service() {
         fun isRunning(): Boolean = running
 
         /** Returns true if the given audio device represents any kind of headphone. */
+        @Suppress("NewApi") // TYPE_BLE_HEADSET / TYPE_HEARING_AID are API 31+ compile-time constants;
+        // they are inlined and never reported on API 26-30 so the check is safe.
         fun isHeadphone(device: AudioDeviceInfo): Boolean = when (device.type) {
             AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
             AudioDeviceInfo.TYPE_WIRED_HEADSET,
             AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
-            AudioDeviceInfo.TYPE_BLE_HEADSET,
             AudioDeviceInfo.TYPE_USB_HEADSET,
+            AudioDeviceInfo.TYPE_BLE_HEADSET,
             AudioDeviceInfo.TYPE_HEARING_AID -> true
             else -> false
         }
 
         /** Returns true if the headphone type matches the user's filter preferences. */
+        @Suppress("NewApi") // same API 31+ note as isHeadphone()
         fun isHeadphoneAllowed(context: Context, device: AudioDeviceInfo): Boolean {
             if (!PreferencesHelper.isFilterHeadphones(context)) {
                 return true
@@ -59,8 +62,8 @@ class MediaPlaybackService : Service() {
                 AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
                 AudioDeviceInfo.TYPE_WIRED_HEADSET -> true
                 AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
-                AudioDeviceInfo.TYPE_BLE_HEADSET -> true
-                AudioDeviceInfo.TYPE_USB_HEADSET -> true
+                AudioDeviceInfo.TYPE_BLE_HEADSET,
+                AudioDeviceInfo.TYPE_USB_HEADSET,
                 AudioDeviceInfo.TYPE_HEARING_AID -> true
                 else -> false
             }
@@ -136,7 +139,14 @@ class MediaPlaybackService : Service() {
             return START_STICKY
         }
 
-        startForeground(NOTIFICATION_ID, buildNotification())
+        androidx.core.app.ServiceCompat.startForeground(
+            this, NOTIFICATION_ID, buildNotification(),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            } else {
+                0
+            }
+        )
         running = true
         sendBroadcast(Intent(ACTION_SERVICE_STATE_CHANGED))
 

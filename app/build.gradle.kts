@@ -17,8 +17,8 @@ android {
         applicationId = "com.fra.autoplay"
         minSdk = 26
         targetSdk = 34
-        versionCode = 13
-        versionName = "2.2.0"
+        versionCode = 14
+        versionName = "2.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true

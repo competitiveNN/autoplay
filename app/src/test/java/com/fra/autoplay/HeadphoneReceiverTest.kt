@@ -1,14 +1,11 @@
 package com.fra.autoplay
 
-import android.content.Context
 import android.content.Intent
-import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -40,7 +37,30 @@ class HeadphoneReceiverTest {
         val intent = Intent(Intent.ACTION_HEADSET_PLUG).apply {
             putExtra("state", 1)
         }
-        // Service not running -> isRunning() returns false -> no crash.
+        // Service not running -> isRunning() returns false -> attempts to start
+        // the service. Must not crash.
         receiver.onReceive(context, intent)
+    }
+
+    @Test
+    fun onReceive_handlesServiceRunning() {
+        val receiver = HeadphoneConnectionReceiver()
+        val context = RuntimeEnvironment.getApplication()
+        val intent = Intent(Intent.ACTION_HEADSET_PLUG).apply {
+            putExtra("state", 1)
+        }
+        // Simulate a running service so ensureServiceRunning() returns early.
+        setServiceRunning(true)
+        try {
+            receiver.onReceive(context, intent)
+        } finally {
+            setServiceRunning(false)
+        }
+    }
+
+    private fun setServiceRunning(value: Boolean) {
+        val field = MediaPlaybackService::class.java.getDeclaredField("running")
+        field.isAccessible = true
+        field.set(null, value)
     }
 }
