@@ -89,7 +89,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .github/badges/*.svg
           git commit -m "Update coverage badge [skip ci]" || echo "No badge changes"
-          git push
+          git push origin master || echo "Push skipped (likely non-fast-forward on tag-triggered run)"
 
       - name: Extract changelog for tag
         id: changelog
