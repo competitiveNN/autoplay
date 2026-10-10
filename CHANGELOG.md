@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.2.1 (2026-10-10)
+## v0.2 (2026-10-10)
 
 ### Fixed
 - **Headphone receiver now starts service on plug** — `HeadphoneConnectionReceiver` no longer no-ops when the service isn't already running. Plugging in headphones now reliably starts `MediaPlaybackService` from a cold state.
