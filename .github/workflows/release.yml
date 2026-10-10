@@ -66,10 +66,6 @@ jobs:
 
       - name: Build signed release AAB + APK
         run: ./gradlew bundleRelease assembleRelease --console=plain
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Generate JaCoCo coverage report
         run: ./gradlew :app:jacocoTestReport
