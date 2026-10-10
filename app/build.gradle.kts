@@ -27,18 +27,10 @@ android {
     signingConfigs {
         val releaseKeystore = file("release.keystore")
         create("release").apply {
-            if (releaseKeystore.exists()) {
-                storeFile = releaseKeystore
-                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "autoplay"
-                keyAlias = System.getenv("KEY_ALIAS") ?: "autoplay"
-                keyPassword = System.getenv("KEY_PASSWORD") ?: "autoplay"
-            } else {
-                // Fall back to the debug keystore so local builds still sign.
-                storeFile = signingConfigs.getByName("debug").storeFile
-                storePassword = signingConfigs.getByName("debug").storePassword
-                keyAlias = signingConfigs.getByName("debug").keyAlias
-                keyPassword = signingConfigs.getByName("debug").keyPassword
-            }
+            storeFile = if (releaseKeystore.exists()) releaseKeystore else signingConfigs.getByName("debug").storeFile
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "autoplay"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "autoplay"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "autoplay"
         }
     }
 
