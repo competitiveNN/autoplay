@@ -28,9 +28,11 @@ android {
         val releaseKeystore = file("release.keystore")
         create("release").apply {
             storeFile = releaseKeystore
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "autoplay"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "autoplay"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "autoplay"
+            // Treat empty env vars as unset so the fallback matches the
+            // keystore-generation step (which uses ${VAR:-autoplay}).
+            storePassword = System.getenv("KEYSTORE_PASSWORD").takeUnless { it.isNullOrBlank() } ?: "autoplay"
+            keyAlias = System.getenv("KEY_ALIAS").takeUnless { it.isNullOrBlank() } ?: "autoplay"
+            keyPassword = System.getenv("KEY_PASSWORD").takeUnless { it.isNullOrBlank() } ?: "autoplay"
         }
     }
 
