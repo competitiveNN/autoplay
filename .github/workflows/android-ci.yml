@@ -113,6 +113,22 @@ jobs:
           test -f app/src/main/res/values-de/strings.xml || (echo "Missing de strings" && exit 1)
           echo "fastlane metadata OK"
 
+      - name: Setup release keystore
+        run: |
+          if [ -n "${KEYSTORE_BASE64}" ]; then
+            echo "${KEYSTORE_BASE64}" | base64 -d > app/release.keystore
+          else
+            keytool -genkey -v -keystore app/release.keystore \
+              -alias "${KEY_ALIAS:-autoplay}" -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "${KEYSTORE_PASSWORD:-autoplay}" \
+              -keypass "${KEYSTORE_PASSWORD:-autoplay}" \
+              -dname "CN=AutoPlay, OU=AutoPlay, O=AutoPlay, L=Unknown, ST=Unknown, C=US"
+          fi
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
       - name: Build release APK (R8)
         run: ./gradlew assembleRelease
 
