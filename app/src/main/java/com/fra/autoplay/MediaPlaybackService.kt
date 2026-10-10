@@ -57,11 +57,8 @@ class MediaPlaybackService : Service() {
             }
             return when (device.type) {
                 AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
-                AudioDeviceInfo.TYPE_WIRED_HEADSET -> true
-                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
-                AudioDeviceInfo.TYPE_BLE_HEADSET,
-                AudioDeviceInfo.TYPE_USB_HEADSET,
-                AudioDeviceInfo.TYPE_HEARING_AID -> true
+                AudioDeviceInfo.TYPE_WIRED_HEADSET,
+                AudioDeviceInfo.TYPE_USB_HEADSET -> true
                 else -> false
             }
         }
