@@ -247,27 +247,24 @@ class MediaPlaybackService : Service() {
         sendMediaButtonClick()
     }
 
-    @Suppress("DEPRECATION")
+    /**
+     * Injects a media PLAY key event so the currently active media session resumes.
+     *
+     * [AudioManager.dispatchMediaKeyEvent] is public API with no permission required, and
+     * routes through [android.media.session.MediaSessionService] to the session holding the
+     * media key focus — the same path used by hardware play buttons.
+     *
+     * NOTE: the previous implementation broadcast [Intent.ACTION_MEDIA_BUTTON], which is a
+     * protected broadcast. Third-party senders are silently ignored by the system, so that
+     * fallback never reached any player — which is why playback never resumed.
+     */
     private fun sendMediaButtonClick() {
-        val startTime = SystemClock.uptimeMillis()
-        val downIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
-            putExtra(
-                Intent.EXTRA_KEY_EVENT,
-                android.view.KeyEvent(startTime, startTime,
-                    android.view.KeyEvent.ACTION_DOWN,
-                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
-            )
-        }
-        val upIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
-            putExtra(
-                Intent.EXTRA_KEY_EVENT,
-                android.view.KeyEvent(startTime, startTime,
-                    android.view.KeyEvent.ACTION_UP,
-                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0)
-            )
-        }
-        sendOrderedBroadcast(downIntent, null)
-        sendOrderedBroadcast(upIntent, null)
+        val now = SystemClock.uptimeMillis()
+        val down = android.view.KeyEvent(now, now, android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.KEYCODE_MEDIA_PLAY, 0)
+        val up = android.view.KeyEvent(now, now, android.view.KeyEvent.ACTION_UP, android.view.KeyEvent.KEYCODE_MEDIA_PLAY, 0)
+        Log.d(TAG, "sendMediaButtonClick: dispatching KEYCODE_MEDIA_PLAY")
+        audioManager.dispatchMediaKeyEvent(down)
+        audioManager.dispatchMediaKeyEvent(up)
     }
 
     private fun buildNotification(): Notification {
