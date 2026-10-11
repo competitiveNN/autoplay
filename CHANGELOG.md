@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5 (2026-10-11)
+
+### Fixed
+- **Playback resume actually works now** — the media-button fallback used `sendOrderedBroadcast(Intent.ACTION_MEDIA_BUTTON)`, but `ACTION_MEDIA_BUTTON` is a protected broadcast that the system silently drops from third-party senders, so no player ever received it. The service now injects `KEYCODE_MEDIA_PLAY` (down + up) via `AudioManager.dispatchMediaKeyEvent()`, the public API that routes through `MediaSessionService` to the session holding media-key focus — the same path hardware play buttons use.
+
 ## v0.4 (2026-10-10)
 
 ### Fixed
