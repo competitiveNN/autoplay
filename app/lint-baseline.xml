@@ -586,7 +586,7 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of com.google.firebase:firebase-bom than 33.2.0 is available: 35.0.2"
+        message="A newer version of com.google.firebase:firebase-bom than 33.2.0 is available: 35.1.0"
         errorLine1="firebase-bom = &quot;33.2.0&quot;"
         errorLine2="               ~~~~~~~~">
         <location
@@ -597,7 +597,7 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of com.google.firebase:firebase-bom than 33.2.0 is available: 35.0.2"
+        message="A newer version of com.google.firebase:firebase-bom than 33.2.0 is available: 35.1.0"
         errorLine1="firebase-bom = &quot;33.2.0&quot;"
         errorLine2="               ~~~~~~~~">
         <location
@@ -608,7 +608,7 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of com.google.firebase:firebase-bom than 33.2.0 is available: 35.0.2"
+        message="A newer version of com.google.firebase:firebase-bom than 33.2.0 is available: 35.1.0"
         errorLine1="firebase-bom = &quot;33.2.0&quot;"
         errorLine2="               ~~~~~~~~">
         <location
