@@ -58,7 +58,7 @@
 
     <issue
         id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.application than 8.5.1 is available: 9.4.1. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.4.1 is difficult: 8.5.2)"
+        message="A newer version of com.android.application than 8.5.1 is available: 9.5.0. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.5.0 is difficult: 8.5.2)"
         errorLine1="agp = &quot;8.5.1&quot;"
         errorLine2="      ~~~~~~~">
         <location
@@ -69,7 +69,7 @@
 
     <issue
         id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.application than 8.5.1 is available: 9.4.1. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.4.1 is difficult: 8.5.2)"
+        message="A newer version of com.android.application than 8.5.1 is available: 9.5.0. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.5.0 is difficult: 8.5.2)"
         errorLine1="agp = &quot;8.5.1&quot;"
         errorLine2="      ~~~~~~~">
         <location
@@ -80,7 +80,7 @@
 
     <issue
         id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.application than 8.5.1 is available: 9.4.1. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.4.1 is difficult: 8.5.2)"
+        message="A newer version of com.android.application than 8.5.1 is available: 9.5.0. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.5.0 is difficult: 8.5.2)"
         errorLine1="agp = &quot;8.5.1&quot;"
         errorLine2="      ~~~~~~~">
         <location
@@ -91,7 +91,7 @@
 
     <issue
         id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.library than 8.5.1 is available: 9.4.1. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.4.1 is difficult: 8.5.2)"
+        message="A newer version of com.android.library than 8.5.1 is available: 9.5.0. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.5.0 is difficult: 8.5.2)"
         errorLine1="agp = &quot;8.5.1&quot;"
         errorLine2="      ~~~~~~~">
         <location
@@ -102,7 +102,7 @@
 
     <issue
         id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.library than 8.5.1 is available: 9.4.1. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.4.1 is difficult: 8.5.2)"
+        message="A newer version of com.android.library than 8.5.1 is available: 9.5.0. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.5.0 is difficult: 8.5.2)"
         errorLine1="agp = &quot;8.5.1&quot;"
         errorLine2="      ~~~~~~~">
         <location
@@ -113,7 +113,7 @@
 
     <issue
         id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.library than 8.5.1 is available: 9.4.1. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.4.1 is difficult: 8.5.2)"
+        message="A newer version of com.android.library than 8.5.1 is available: 9.5.0. (There is also a newer version of 8.5.𝑥 available, if upgrading to 9.5.0 is difficult: 8.5.2)"
         errorLine1="agp = &quot;8.5.1&quot;"
         errorLine2="      ~~~~~~~">
         <location
